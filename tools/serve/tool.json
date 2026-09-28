@@ -1,0 +1,51 @@
+{
+  "name": "serve",
+  "version": "0.1.0",
+  "description": "Share a file or directory over local HTTP. Spawns an http.server through the proc registry (manageable via proc list/kill), prints the URL, renders a QR code when qrencode is installed. Localhost by default; --lan for network sharing.",
+  "use_when": "sharing files or artifacts over HTTP with the user or LAN",
+  "category": "interact",
+  "keywords": [
+    "serve",
+    "http",
+    "share",
+    "server",
+    "artifact",
+    "publish",
+    "qr",
+    "lan",
+    "download"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "serve.py",
+  "run": "python3 tools/serve/serve.py <serve|list|stop> [args]",
+  "args": [
+    {
+      "name": "serve <path> [--port 0] [--lan]",
+      "description": "Serve a file's dir or a directory; prints URL (+ QR when qrencode exists).",
+      "required": false
+    },
+    {
+      "name": "list",
+      "description": "Running http.server shares (via proc registry).",
+      "required": false
+    },
+    {
+      "name": "stop <proc-id>",
+      "description": "Stop a running share.",
+      "required": false
+    }
+  ],
+  "env": {
+    "AGENT_TOOLS_HOME": "State root; share procs register in <root>/procs/."
+  },
+  "dependencies": [],
+  "stdout": "JSON {proc, url, dir, lan, stop, qr?} or running-share list.",
+  "exit_codes": {
+    "0": "success",
+    "1": "spawn/stop failure",
+    "2": "path not found"
+  },
+  "notes": "--lan binds 0.0.0.0 with no authentication — localhost is the default for a reason.",
+  "selftest": "tests/serve/smoke.sh"
+}

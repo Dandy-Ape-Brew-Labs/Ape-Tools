@@ -1,0 +1,51 @@
+{
+  "name": "fs-glob",
+  "version": "0.1.0",
+  "description": "Find files by glob pattern, sorted by mtime newest-first. '*' matches across directories; .gitignore and build dirs are respected by default.",
+  "use_when": "finding files by name or extension pattern",
+  "category": "files",
+  "keywords": [
+    "glob",
+    "find",
+    "files",
+    "pattern",
+    "where is",
+    "locate",
+    "extension"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "fs_glob.py",
+  "run": "python3 tools/fs-glob/fs_glob.py <pattern> [--path DIR] [--max N] [--no-gitignore]",
+  "args": [
+    {
+      "name": "pattern",
+      "description": "Glob pattern, e.g. '**/*.test.ts' or 'config.*'.",
+      "required": true
+    },
+    {
+      "name": "--path",
+      "description": "Search root directory.",
+      "required": false,
+      "default": "."
+    },
+    {
+      "name": "--max",
+      "description": "Result cap.",
+      "required": false,
+      "default": "200"
+    },
+    {
+      "name": "--no-gitignore",
+      "description": "Include ignored files.",
+      "required": false
+    }
+  ],
+  "dependencies": [],
+  "stdout": "JSON {root, pattern, count, capped, paths[]}.",
+  "exit_codes": {
+    "0": "success (count may be 0)",
+    "2": "usage error"
+  },
+  "selftest": "tests/fs-glob/smoke.sh"
+}

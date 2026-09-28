@@ -1,0 +1,67 @@
+{
+  "name": "file-read-many",
+  "version": "0.1.0",
+  "description": "Batch-read multiple files matched by glob patterns. Concatenates with '--- {path} ---' separators, respects .gitignore, skips binaries, caps total output.",
+  "use_when": "loading several files at once by glob pattern",
+  "category": "files",
+  "keywords": [
+    "read",
+    "many",
+    "batch",
+    "multiple",
+    "glob",
+    "concat",
+    "context"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "file_read_many.py",
+  "run": "python3 tools/file-read-many/file_read_many.py [--root DIR] [--include GLOB ...] [--exclude GLOB ...] [paths...]",
+  "args": [
+    {
+      "name": "paths",
+      "description": "Explicit file paths or glob patterns.",
+      "required": false
+    },
+    {
+      "name": "--root",
+      "description": "Root directory for glob matching.",
+      "required": false,
+      "default": "."
+    },
+    {
+      "name": "--include",
+      "description": "Glob to include (repeatable).",
+      "required": false
+    },
+    {
+      "name": "--exclude",
+      "description": "Glob to exclude (repeatable).",
+      "required": false
+    },
+    {
+      "name": "--no-gitignore",
+      "description": "Do not apply .gitignore filtering.",
+      "required": false
+    },
+    {
+      "name": "--no-numbers",
+      "description": "Omit line numbers in file bodies.",
+      "required": false
+    },
+    {
+      "name": "--max-bytes",
+      "description": "Total output cap.",
+      "required": false,
+      "default": "262144"
+    }
+  ],
+  "dependencies": [],
+  "stdout": "Concatenated file contents with '--- path ---' separators and line numbers.",
+  "exit_codes": {
+    "0": "success",
+    "1": "read errors",
+    "2": "usage error (no files matched)"
+  },
+  "selftest": "tests/file-read-many/smoke.sh"
+}

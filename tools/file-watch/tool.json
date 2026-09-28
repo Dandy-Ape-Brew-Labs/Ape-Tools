@@ -1,0 +1,59 @@
+{
+  "name": "file-watch",
+  "version": "0.1.0",
+  "description": "Watch files/dirs for created/deleted/modified events, emitted as JSON lines on stdout. Polling-based — no inotify dependency. --once makes it a blocking 'wait until file appears/changes' primitive; --timeout bounds the wait.",
+  "use_when": "waiting for a build artifact, reacting to file changes, gating on a lockfile",
+  "category": "files",
+  "keywords": [
+    "watch",
+    "monitor",
+    "files",
+    "changes",
+    "wait",
+    "events",
+    "poll",
+    "trigger",
+    "build",
+    "artifact"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "file_watch.py",
+  "run": "python3 tools/file-watch/file_watch.py <paths...> [--interval S] [--timeout S] [--once] [--events created,deleted,modified]",
+  "args": [
+    {
+      "name": "paths",
+      "description": "Files or directories to watch (recursive).",
+      "required": true
+    },
+    {
+      "name": "--once",
+      "description": "Print the first event batch and exit 0.",
+      "required": false
+    },
+    {
+      "name": "--timeout S",
+      "description": "Stop after S seconds (default 0 = until SIGTERM).",
+      "required": false
+    },
+    {
+      "name": "--interval S",
+      "description": "Poll interval seconds (default 0.5).",
+      "required": false
+    },
+    {
+      "name": "--events a,b,c",
+      "description": "Subset of created,deleted,modified (default all).",
+      "required": false
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "One JSON object per event line: {event, path, ts}.",
+  "exit_codes": {
+    "0": "watched until timeout/event/SIGTERM",
+    "2": "usage error"
+  },
+  "notes": "Pair with 'proc' to run in background, or call --once inline as a blocking gate.",
+  "selftest": "tests/file-watch/smoke.sh"
+}

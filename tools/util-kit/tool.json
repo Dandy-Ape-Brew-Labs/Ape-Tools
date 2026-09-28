@@ -1,0 +1,67 @@
+{
+  "name": "util-kit",
+  "version": "0.1.0",
+  "description": "Deterministic micro-ops: now (time/epoch), hash (any algorithm), b64 encode/decode, env inspection (auto-redacts secrets), uuid, json pretty/keys.",
+  "use_when": "needing a quick deterministic utility without writing code",
+  "category": "util",
+  "keywords": [
+    "hash",
+    "sha256",
+    "md5",
+    "base64",
+    "encode",
+    "decode",
+    "time",
+    "epoch",
+    "uuid",
+    "env",
+    "environment",
+    "json",
+    "pretty"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "util_kit.py",
+  "run": "python3 tools/util-kit/util_kit.py <now|hash|b64|env|uuid|json> [args]",
+  "args": [
+    {
+      "name": "now [--utc]",
+      "description": "ISO + epoch timestamp.",
+      "required": false
+    },
+    {
+      "name": "hash <file> [--algo]",
+      "description": "File digest; any hashlib algorithm.",
+      "required": false
+    },
+    {
+      "name": "b64 <encode|decode>",
+      "description": "--text, --file, or stdin.",
+      "required": false
+    },
+    {
+      "name": "env [--prefix P]",
+      "description": "Env vars; secrets auto-redacted.",
+      "required": false
+    },
+    {
+      "name": "uuid",
+      "description": "Fresh UUID4.",
+      "required": false
+    },
+    {
+      "name": "json <pretty|keys> [file]",
+      "description": "Format or list object keys; stdin if no file.",
+      "required": false
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "JSON or raw output depending on op.",
+  "exit_codes": {
+    "0": "success",
+    "1": "invalid input",
+    "2": "file not found"
+  },
+  "selftest": "tests/util-kit/smoke.sh"
+}

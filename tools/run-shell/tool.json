@@ -1,0 +1,55 @@
+{
+  "name": "run-shell",
+  "version": "0.1.0",
+  "description": "Run a shell command (bash -c) with a timeout and head+tail truncated output. Returns JSON {exit, stdout, stderr, duration_ms, truncated}. For long-running processes use proc instead.",
+  "use_when": "running a shell command and capturing its result",
+  "category": "exec",
+  "keywords": [
+    "bash",
+    "shell",
+    "command",
+    "run",
+    "execute",
+    "terminal",
+    "subprocess",
+    "test",
+    "build"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "run_shell.py",
+  "run": "python3 tools/run-shell/run_shell.py <command> [--cwd DIR] [--timeout-ms N] [--max-bytes N]",
+  "args": [
+    {
+      "name": "command",
+      "description": "Command string, run via bash -c.",
+      "required": true
+    },
+    {
+      "name": "--cwd",
+      "description": "Working directory.",
+      "required": false,
+      "default": "."
+    },
+    {
+      "name": "--timeout-ms",
+      "description": "Kill after N ms.",
+      "required": false,
+      "default": "30000"
+    },
+    {
+      "name": "--max-bytes",
+      "description": "Per-stream output cap.",
+      "required": false,
+      "default": "65536"
+    }
+  ],
+  "dependencies": [],
+  "stdout": "JSON {exit, stdout, stderr, duration_ms, truncated}.",
+  "exit_codes": {
+    "0": "command ran (check 'exit' field for the command's code)",
+    "2": "usage error"
+  },
+  "notes": "The tool exits 0 whenever the command ran \u2014 inspect 'exit' inside the JSON for the real code. Timeout yields exit=124 in the result.",
+  "selftest": "tests/run-shell/smoke.sh"
+}

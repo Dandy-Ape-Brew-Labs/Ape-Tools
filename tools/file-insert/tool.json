@@ -1,0 +1,44 @@
+{
+  "name": "file-insert",
+  "version": "0.1.0",
+  "description": "Insert text after a specific line number without needing a unique string anchor. --line 0 inserts at the top, -1 appends to the end.",
+  "use_when": "inserting lines at a position rather than by matching text",
+  "category": "files",
+  "keywords": [
+    "insert",
+    "append",
+    "line",
+    "position",
+    "prepend"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "file_insert.py",
+  "run": "python3 tools/file-insert/file_insert.py <path> --line N [--text TEXT]",
+  "args": [
+    {
+      "name": "path",
+      "description": "File to modify.",
+      "required": true
+    },
+    {
+      "name": "--line",
+      "description": "Insert after this line; 0 = top of file, -1 = end.",
+      "required": true
+    },
+    {
+      "name": "--text",
+      "description": "Text to insert; omit to read stdin.",
+      "required": false
+    }
+  ],
+  "dependencies": [],
+  "stdout": "JSON {path, inserted_after_line, inserted_lines, total_lines}.",
+  "exit_codes": {
+    "0": "inserted",
+    "1": "I/O error or line out of range",
+    "2": "usage error"
+  },
+  "notes": "Line numbers shift after each insert \u2014 re-locate by content when chaining edits.",
+  "selftest": "tests/file-insert/smoke.sh"
+}

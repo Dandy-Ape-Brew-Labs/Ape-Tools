@@ -1,0 +1,64 @@
+{
+  "name": "fs-manage",
+  "version": "0.1.0",
+  "description": "Filesystem mutations: mkdir, move, copy, delete. Delete moves targets to ~/.local/share/agent-tools/trash by default (recoverable); --permanent removes for real.",
+  "use_when": "creating dirs, moving, copying, or deleting files",
+  "category": "files",
+  "keywords": [
+    "mkdir",
+    "move",
+    "rename",
+    "copy",
+    "delete",
+    "remove",
+    "trash",
+    "filesystem"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "fs_manage.py",
+  "run": "python3 tools/fs-manage/fs_manage.py <mkdir|move|copy|delete> <src> [dest] [--recursive] [--force] [--permanent]",
+  "args": [
+    {
+      "name": "action",
+      "description": "mkdir | move | copy | delete.",
+      "required": true
+    },
+    {
+      "name": "source",
+      "description": "Path to create/delete, or move/copy source.",
+      "required": true
+    },
+    {
+      "name": "dest",
+      "description": "Destination for move/copy.",
+      "required": false
+    },
+    {
+      "name": "--recursive",
+      "description": "Required for directory copy/delete.",
+      "required": false
+    },
+    {
+      "name": "--force",
+      "description": "Overwrite existing destination.",
+      "required": false
+    },
+    {
+      "name": "--permanent",
+      "description": "Really delete instead of moving to trash.",
+      "required": false
+    }
+  ],
+  "env": {
+    "AGENT_TOOLS_HOME": "State root; trash lives under <root>/trash."
+  },
+  "dependencies": [],
+  "stdout": "JSON describing the action performed.",
+  "exit_codes": {
+    "0": "success",
+    "1": "refusal (exists/missing/needs flag) or I/O error",
+    "2": "usage error"
+  },
+  "selftest": "tests/fs-manage/smoke.sh"
+}

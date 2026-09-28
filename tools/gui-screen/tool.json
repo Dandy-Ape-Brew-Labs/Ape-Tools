@@ -1,0 +1,43 @@
+{
+  "name": "gui-screen",
+  "version": "0.1.0",
+  "description": "Screenshot capture for KDE Plasma/Wayland: spectacle first, then grim and gnome-screenshot fallbacks. Returns the PNG path for image-capable models.",
+  "use_when": "seeing what is on the user's screen",
+  "category": "gui",
+  "keywords": [
+    "screenshot",
+    "screen",
+    "capture",
+    "spectacle",
+    "wayland",
+    "kde",
+    "image",
+    "display"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "gui_screen.py",
+  "run": "python3 tools/gui-screen/gui_screen.py <shot|backends> [args]",
+  "args": [
+    {
+      "name": "shot",
+      "description": "--out FILE --window --region --monitor N. Emits {path, bytes, backend}.",
+      "required": false
+    },
+    {
+      "name": "backends",
+      "description": "JSON map of available capture tools.",
+      "required": false
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "JSON {path, bytes, backend}.",
+  "exit_codes": {
+    "0": "success",
+    "1": "all backends failed",
+    "3": "no backend installed"
+  },
+  "notes": "Wayland: xdotool/scrot do not work. spectacle is the KDE-native path; --region opens an interactive picker.",
+  "selftest": "tests/gui-screen/smoke.sh"
+}

@@ -1,0 +1,63 @@
+{
+  "name": "file-edit",
+  "version": "0.1.0",
+  "description": "Edit a file by exact-string replacement. old_string must match exactly once (whitespace included) unless --replace-all. Supports atomic multi-edit via a JSON array, and --dry-run to preview a unified diff.",
+  "use_when": "making a targeted edit inside an existing file",
+  "category": "files",
+  "keywords": [
+    "edit",
+    "replace",
+    "str_replace",
+    "patch",
+    "change",
+    "modify",
+    "rename",
+    "update",
+    "diff"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "file_edit.py",
+  "run": "python3 tools/file-edit/file_edit.py <path> (--old OLD --new NEW [--replace-all] | --edits FILE.json|-) [--dry-run]",
+  "args": [
+    {
+      "name": "path",
+      "description": "File to edit.",
+      "required": true
+    },
+    {
+      "name": "--old",
+      "description": "Exact string to find (copy from a fresh read).",
+      "required": false
+    },
+    {
+      "name": "--new",
+      "description": "Replacement string.",
+      "required": false
+    },
+    {
+      "name": "--edits",
+      "description": "JSON file or '-' stdin: [{old, new, replace_all?}] applied atomically in order.",
+      "required": false
+    },
+    {
+      "name": "--replace-all",
+      "description": "Replace every occurrence.",
+      "required": false
+    },
+    {
+      "name": "--dry-run",
+      "description": "Print unified diff without writing.",
+      "required": false
+    }
+  ],
+  "dependencies": [],
+  "stdout": "JSON {path, edits_applied, replacements, diff} \u2014 or just the diff with --dry-run.",
+  "exit_codes": {
+    "0": "edited",
+    "1": "no match / ambiguous match / I/O error",
+    "2": "usage error"
+  },
+  "notes": "0 matches = re-read the file (whitespace/tabs differ). N matches = widen context or use --replace-all. Never rebuild files from truncated reads.",
+  "selftest": "tests/file-edit/smoke.sh"
+}

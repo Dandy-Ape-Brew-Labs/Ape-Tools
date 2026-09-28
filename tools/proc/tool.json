@@ -1,0 +1,61 @@
+{
+  "name": "proc",
+  "version": "0.1.0",
+  "description": "Background process manager. start spawns a detached process with stdout/stderr captured to a per-proc registry; read polls output; write feeds stdin via FIFO; kill terminates the process group. Linux/Unix only.",
+  "use_when": "running a long-lived background process (server, watcher, build)",
+  "category": "exec",
+  "keywords": [
+    "background",
+    "process",
+    "daemon",
+    "server",
+    "watch",
+    "poll",
+    "kill",
+    "stdin",
+    "spawn",
+    "detached"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "proc.py",
+  "run": "python3 tools/proc/proc.py <start|read|write|list|kill> [args]",
+  "args": [
+    {
+      "name": "start <cmd>",
+      "description": "Spawn detached; --cwd sets working dir. Returns proc id.",
+      "required": false
+    },
+    {
+      "name": "read <id>",
+      "description": "Poll output. --tail N or --since <byte-offset> for incremental stdout.",
+      "required": false
+    },
+    {
+      "name": "write <id>",
+      "description": "Append --text (or stdin) to the process's stdin.",
+      "required": false
+    },
+    {
+      "name": "list",
+      "description": "All tracked procs with status.",
+      "required": false
+    },
+    {
+      "name": "kill <id>",
+      "description": "SIGTERM the process group, SIGKILL after 5s.",
+      "required": false
+    }
+  ],
+  "env": {
+    "AGENT_TOOLS_HOME": "State root; procs live under <root>/procs/<id>/."
+  },
+  "dependencies": [],
+  "stdout": "JSON: start -> {id, pid, dir}; read -> {status, stdout, stderr, exit?}; list -> array; write/kill -> ack.",
+  "exit_codes": {
+    "0": "success",
+    "1": "operational error (e.g. write to dead proc)",
+    "2": "usage error"
+  },
+  "selftest": "tests/proc/smoke.sh"
+}

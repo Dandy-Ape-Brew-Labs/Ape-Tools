@@ -1,0 +1,371 @@
+[
+  {
+    "id": "forced-file-read",
+    "mode": "forced",
+    "prompt": "Use the file-read tool to read note.txt in your workspace and tell me what its second line says.",
+    "files": {"note.txt": "first line\nsecond line\nthird line\n"},
+    "expect": {"tools": ["file-read"], "answer_contains": ["second line"]}
+  },
+  {
+    "id": "forced-file-read-many",
+    "mode": "forced",
+    "prompt": "Read every .py file in your workspace in one shot with file-read-many, then tell me which file defines a main() function.",
+    "files": {"a.py": "def helper():\n    return 1\n", "b.py": "def main():\n    print('hi')\n"},
+    "expect": {"tools": ["file-read-many"], "answer_contains": ["b.py"]}
+  },
+  {
+    "id": "forced-file-read-ranges",
+    "mode": "forced",
+    "prompt": "big.log in your workspace is a very large log file (10,000 lines, ~590KB) — far bigger than one file-read result can hold, so a single full read will not show the deep lines. Its first line is a marker index telling you where two MARKER lines live deep in the file. Using file-read, read the file in stages (line ranges via --start/--end or --offset/--limit), find the two MARKER lines, and report their two codewords.",
+    "setup": ["python3 -c \"lines=[f'log entry {i:05d}: routine system noise, filler padding text' for i in range(1,10001)]; lines[0]='MARKER INDEX - file has 10000 lines. ALPHA marker at line 3737, OMEGA marker at line 9100.'; lines[3736]='MARKER[ALPHA] codeword=PEGASUS-9174 status=active'; lines[9099]='MARKER[OMEGA] codeword=KESTREL-5520 status=active'; open('big.log','w').write('\\n'.join(lines)+'\\n')\""],
+    "expect": {"tools": ["file-read"], "tools_forbidden": ["run-shell", "code-grep", "logs-query", "py-run"], "answer_contains": ["PEGASUS-9174", "KESTREL-5520"]},
+    "timeout_s": 300
+  },
+  {
+    "id": "forced-file-info",
+    "mode": "forced",
+    "prompt": "Use file-info on the file blob.bin in your workspace — report its size in bytes.",
+    "files": {"blob.bin": "0123456789abcdef"},
+    "expect": {"tools": ["file-info"], "answer_contains": ["16"]}
+  },
+  {
+    "id": "forced-file-media",
+    "mode": "forced",
+    "prompt": "Inspect pic.png in your workspace using file-media and report its pixel dimensions.",
+    "setup": ["python3 -c \"import zlib,struct; sig=b'\\x89PNG\\r\\n\\x1a\\n'; ihdr=struct.pack('>IIBBBBB',2,2,8,2,0,0,0); raw=b''.join(b'\\x00'+b'\\xff\\x00\\x00'*2 for _ in range(2)); idat=zlib.compress(raw); chunk=lambda t,d: struct.pack('>I',len(d))+t+d+struct.pack('>I',zlib.crc32(t+d)); open('pic.png','wb').write(sig+chunk(b'IHDR',ihdr)+chunk(b'IDAT',idat)+chunk(b'IEND',b''))\""],
+    "expect": {"tools": ["file-media"], "answer_contains": ["2"]}
+  },
+  {
+    "id": "forced-file-write",
+    "mode": "forced",
+    "prompt": "Create a file called hello.txt containing exactly 'hello world' using the file-write tool.",
+    "expect": {"tools": ["file-write"], "files": [{"path": "hello.txt", "contains": "hello world"}]}
+  },
+  {
+    "id": "forced-file-edit",
+    "mode": "forced",
+    "prompt": "In config.txt in your workspace, change 'mode = dev' to 'mode = prod' using file-edit. Confirm by re-reading the file.",
+    "files": {"config.txt": "name = app\nmode = dev\nport = 8000\n"},
+    "expect": {"tools": ["file-edit"], "files": [{"path": "config.txt", "contains": "mode = prod"}]}
+  },
+  {
+    "id": "forced-file-insert",
+    "mode": "forced",
+    "prompt": "Insert the line '# header' at the very top of doc.md using file-insert.",
+    "files": {"doc.md": "body text\nmore text\n"},
+    "expect": {"tools": ["file-insert"], "files": [{"path": "doc.md", "regex": "^# header\\n"}]}
+  },
+  {
+    "id": "forced-file-patch",
+    "mode": "forced",
+    "prompt": "Apply this exact patch to app.py using file-patch (save the patch to a file in your workspace, then pass it with --file):\n*** Begin Patch\n*** Update File: app.py\n@@\n-def greet():\n+def hello():\n     return 'hi'\n \n-greet()\n+hello()\n*** End Patch\nConfirm the updated function definition.",
+    "files": {"app.py": "def greet():\n    return 'hi'\n\ngreet()\n"},
+    "expect": {"tools": ["file-patch"], "files": [{"path": "app.py", "contains": "def hello()"}]},
+    "max_rounds": 18
+  },
+  {
+    "id": "forced-fs-list",
+    "mode": "forced",
+    "prompt": "List the contents of your workspace with fs-list and tell me how many entries there are.",
+    "files": {"x.txt": "x", "y.txt": "y", "sub/z.txt": "z"},
+    "expect": {"tools": ["fs-list"]}
+  },
+  {
+    "id": "forced-fs-glob",
+    "mode": "forced",
+    "prompt": "Use fs-glob to find all .md files in your workspace. Report the paths it returned.",
+    "files": {"README.md": "# r\n", "docs/guide.md": "g\n", "code.py": "x=1\n"},
+    "expect": {"tools": ["fs-glob"], "answer_contains": ["README.md", "guide.md"]}
+  },
+  {
+    "id": "forced-fs-manage",
+    "mode": "forced",
+    "prompt": "Using fs-manage: create a directory 'keep', move old.txt into it as new.txt, and delete junk.txt.",
+    "files": {"old.txt": "keep me\n", "junk.txt": "delete me\n"},
+    "expect": {"tools": ["fs-manage"], "files": [{"path": "keep/new.txt", "contains": "keep me"}]}
+  },
+  {
+    "id": "forced-code-grep",
+    "mode": "forced",
+    "prompt": "Search your workspace with code-grep for the pattern 'TODO' and report which file(s) contain it.",
+    "files": {"src/main.py": "x = 1  # TODO: fix\n", "src/util.py": "y = 2\n"},
+    "expect": {"tools": ["code-grep"], "answer_contains": ["main.py"]}
+  },
+  {
+    "id": "forced-code-map",
+    "mode": "forced",
+    "prompt": "Use code-map on module.py in your workspace and list its top-level symbols.",
+    "files": {"module.py": "import os\n\nCONSTANT = 1\n\nclass Thing:\n    pass\n\ndef run():\n    pass\n"},
+    "expect": {"tools": ["code-map"], "answer_contains": ["Thing", "run"]}
+  },
+  {
+    "id": "forced-ast-search",
+    "mode": "forced",
+    "prompt": "Use ast-search on the workspace to find call sites of the function 'connect'. Report file and line.",
+    "files": {"net.py": "def connect():\n    pass\n\nclient = connect()\n", "other.py": "# connect() mentioned in a comment only\n"},
+    "expect": {"tools": ["ast-search"], "answer_contains": ["net.py"]}
+  },
+  {
+    "id": "forced-nb-tool",
+    "mode": "forced",
+    "prompt": "Use nb-tool to list the cells of analysis.ipynb in your workspace, then read cell 1's source.",
+    "setup": ["python3 -c \"import json; nb={'nbformat':4,'nbformat_minor':5,'metadata':{},'cells':[{'cell_type':'markdown','metadata':{},'source':['# T\\n']},{'cell_type':'code','metadata':{},'execution_count':1,'source':['x = 42\\n'],'outputs':[]}]}; json.dump(nb, open('analysis.ipynb','w'))\""],
+    "expect": {"tools": ["nb-tool"], "answer_contains": ["x = 42"]}
+  },
+  {
+    "id": "forced-run-shell",
+    "mode": "forced",
+    "prompt": "Run the command 'echo test-output-123' via the run-shell tool and report what it printed.",
+    "expect": {"tools": ["run-shell"], "answer_contains": ["test-output-123"]}
+  },
+  {
+    "id": "forced-proc",
+    "mode": "forced",
+    "prompt": "Use proc: start the command 'echo ready && sleep 2 && echo done', read its output after a moment, then report the final status.",
+    "expect": {"tools": ["proc"], "answer_contains": ["ready"]}
+  },
+  {
+    "id": "forced-py-run",
+    "mode": "forced",
+    "prompt": "Execute the Python expression print(6 * 7) with py-run and report the output.",
+    "expect": {"tools": ["py-run"], "answer_contains": ["42"]}
+  },
+  {
+    "id": "forced-web-search",
+    "mode": "forced",
+    "prompt": "Use web-search to search for 'pytest documentation' and report the first result's URL.",
+    "requires": ["net:html.duckduckgo.com"],
+    "expect": {"tools": ["web-search"], "answer_contains": ["http"]}
+  },
+  {
+    "id": "forced-web-fetch",
+    "mode": "forced",
+    "prompt": "Fetch https://example.com with web-fetch and report the page's main heading text. Use --format html so article extraction does not omit the heading.",
+    "requires": ["net:example.com"],
+    "expect": {"tools": ["web-fetch"], "answer_contains": ["Example Domain"]}
+  },
+  {
+    "id": "forced-plan-todo",
+    "mode": "forced",
+    "prompt": "Use plan-todo to create a 3-step plan for 'write tests', marking the first step in_progress, then list it back to me.",
+    "expect": {"tools": ["plan-todo"], "answer_contains": ["in_progress"]}
+  },
+  {
+    "id": "forced-memory",
+    "mode": "forced",
+    "prompt": "Store a memory named facts.md containing 'the sky is blue' using the memory tool, then view it to confirm.",
+    "expect": {"tools": ["memory"], "answer_contains": ["sky is blue"]}
+  },
+  {
+    "id": "forced-ask-user",
+    "mode": "forced",
+    "prompt": "Use ask-user to ask 'Proceed with deployment?' with options 'yes,no' and a very short timeout (e.g. --timeout 10). If it times out, the harness may still answer later — check ask-user list/read for the answer before giving up. Report the answer you received.",
+    "auto_answer": "yes",
+    "expect": {"tools": ["ask-user"], "answer_contains": ["yes"]}
+  },
+  {
+    "id": "forced-notify",
+    "mode": "forced",
+    "prompt": "Send a notification titled 'test alert' with body 'smoke check' using the notify tool, then report whether it was recorded.",
+    "expect": {"tools": ["notify"], "answer_contains": ["recorded"]}
+  },
+  {
+    "id": "forced-util-kit",
+    "mode": "forced",
+    "prompt": "Use util-kit to compute the sha256 hash of data.txt in your workspace and report the first 8 hex chars.",
+    "files": {"data.txt": "abc"},
+    "expect": {"tools": ["util-kit"], "answer_contains": ["ba7816bf"]}
+  },
+  {
+    "id": "forced-agent-spawn",
+    "mode": "forced",
+    "prompt": "Check which sub-agent backends are installed using agent-spawn's 'backends' command, and report the JSON.",
+    "expect": {"tools": ["agent-spawn"], "answer_contains": ["claude"]}
+  },
+  {
+    "id": "forced-schedule",
+    "mode": "forced",
+    "prompt": "Using the schedule tool: create a one-shot timer named 'tcheck' that runs 'true' in 2 hours, list it to confirm, then cancel it.",
+    "requires": ["systemd-user"],
+    "expect": {"tools": ["schedule"], "answer_contains": ["tcheck"]}
+  },
+  {
+    "id": "forced-git-ops",
+    "mode": "forced",
+    "prompt": "Use git-ops to report the current branch of the repository root (the repo path is in your system prompt — pass it via --cwd).",
+    "expect": {"tools": ["git-ops"]}
+  },
+  {
+    "id": "forced-github",
+    "mode": "forced",
+    "prompt": "Run the github tool's 'auth' command and report the authenticated login.",
+    "requires": ["gh-auth", "net:api.github.com"],
+    "expect": {"tools": ["github"], "answer_contains": ["login"]}
+  },
+  {
+    "id": "forced-db-query",
+    "mode": "forced",
+    "prompt": "Query the sqlite database shop.db in your workspace using db-query — list the items in the 'items' table.",
+    "setup": ["sqlite3 shop.db \"CREATE TABLE items(id INTEGER PRIMARY KEY, name TEXT); INSERT INTO items VALUES(1,'apple'),(2,'berry');\""],
+    "expect": {"tools": ["db-query"], "answer_contains": ["apple", "berry"]}
+  },
+  {
+    "id": "forced-logs-query",
+    "mode": "forced",
+    "prompt": "Use logs-query on app.log in your workspace to extract only the ERROR-level lines.",
+    "files": {"app.log": "2026-01-01T10:00:00 INFO boot ok\n2026-01-01T10:01:00 ERROR disk full\n2026-01-01T10:02:00 WARN low mem\n"},
+    "expect": {"tools": ["logs-query"], "answer_contains": ["disk full"]}
+  },
+  {
+    "id": "forced-gui-screen",
+    "mode": "forced",
+    "prompt": "Check which screenshot backends are available using gui-screen's 'backends' command and report the JSON.",
+    "expect": {"tools": ["gui-screen"], "answer_contains": ["spectacle"]}
+  },
+  {
+    "id": "forced-gui-input",
+    "mode": "forced",
+    "prompt": "Check GUI input availability using gui-input's 'backends' command and report whether ydotool is installed.",
+    "expect": {"tools": ["gui-input"], "answer_contains": ["ydotool"]}
+  },
+  {
+    "id": "forced-list-tools",
+    "mode": "forced",
+    "prompt": "Run list-tools with --format index and report how many tools the toolbox contains.",
+    "expect": {"tools": ["list-tools"], "answer_contains": ["39"]}
+  },
+  {
+    "id": "forced-tool-search",
+    "mode": "forced",
+    "prompt": "Use tool-search with the query 'edit a file in place' and report the top-ranked tool it returns.",
+    "expect": {"tools": ["tool-search"], "answer_contains": ["file-edit"]}
+  },
+  {
+    "id": "forced-selftest",
+    "mode": "forced",
+    "prompt": "Run the selftest tool with --manifests-only and report whether all manifests are valid.",
+    "expect": {"tools": ["selftest"], "answer_contains": ["ok"]}
+  },
+  {
+    "id": "forced-mcp-serve",
+    "mode": "forced",
+    "prompt": "Verify MCP server exposure with run-shell. Call tool_call with name run-shell and argv [\"bash tests/mcp-serve/smoke.sh\", \"--cwd\", \"<repo root path from your system prompt>\"] (replace the placeholder with the actual repo root). The script handshakes JSON-RPC initialize and tools/list, prints the MCP tool count, and fails unless more than 30 are exposed. Report the printed count.",
+    "expect": {"tools_any": ["run-shell", "mcp-serve"], "answer_contains": ["38"]},
+    "max_rounds": 12, "timeout_s": 180
+  },
+  {
+    "id": "forced-obscura-browse",
+    "mode": "forced",
+    "prompt": "Use obscura-browse to fetch https://example.com and report the page title.",
+    "requires": ["file:vendor/obscura/obscura", "net:example.com"],
+    "expect": {"tools": ["obscura-browse"], "answer_contains": ["Example"]}
+  },
+  {
+    "id": "forced-web-browser",
+    "mode": "forced",
+    "prompt": "Use the web-browser agent tool to visit https://example.com and report the main heading.",
+    "requires": ["file:vendor/obscura/obscura", "net:example.com"],
+    "expect": {"tools": ["web-browser"], "answer_contains": ["Example"]},
+    "max_rounds": 15, "timeout_s": 420
+  },
+
+  {
+    "id": "choice-count-py-files",
+    "mode": "choice",
+    "prompt": "How many Python files are inside the repo's tools/ directory (recursively, any depth)? The repo root path is in your system prompt. Answer with just the number.",
+    "expect": {"tools_any": ["fs-glob", "run-shell", "fs-list"], "answer_contains": ["37"]}
+  },
+  {
+    "id": "choice-read-absolute",
+    "mode": "choice",
+    "prompt": "Read the file /etc/hostname and report its contents.",
+    "expect": {"tools_any": ["file-read", "run-shell"]}
+  },
+  {
+    "id": "choice-remember",
+    "mode": "choice",
+    "prompt": "Remember this for future sessions: 'test reports live under tests/<tool>/reports/'. Confirm it was stored.",
+    "expect": {"tools_any": ["memory"], "answer_contains": ["report"]}
+  },
+  {
+    "id": "choice-hash-file",
+    "mode": "choice",
+    "prompt": "Compute the sha256 checksum of the file payload.bin in your workspace. Report the hex digest.",
+    "files": {"payload.bin": "checkme"},
+    "expect": {"tools_any": ["util-kit", "run-shell", "py-run"], "answer_contains": ["784fec98"]}
+  },
+  {
+    "id": "choice-big-number",
+    "mode": "choice",
+    "prompt": "What is 2 to the power 64? Compute it, don't guess.",
+    "expect": {"tools_any": ["py-run", "run-shell"], "answer_contains": ["18446744073709551616"]}
+  },
+  {
+    "id": "choice-find-symbol",
+    "mode": "choice",
+    "prompt": "In the repository (path in your system prompt), find where the function 'state_dir' is defined. Report the file and line.",
+    "expect": {"tools_any": ["code-grep", "ast-search", "run-shell"], "answer_contains": ["agentlib.py"]}
+  },
+  {
+    "id": "choice-scratch-cycle",
+    "mode": "choice",
+    "prompt": "In your workspace: create a directory 'scratch', write a file 'a.txt' containing 'tmp' inside it, then delete the whole directory. Confirm it's gone.",
+    "expect": {"tools_any": ["fs-manage", "file-write", "run-shell"], "absent": ["scratch"]}
+  },
+  {
+    "id": "choice-log-errors",
+    "mode": "choice",
+    "prompt": "There's a syslog.log in your workspace. Show me only the lines containing 'fail' (any case).",
+    "files": {"syslog.log": "ok boot\nFAILED to mount\nnetwork up\nfailover started\n"},
+    "expect": {"tools_any": ["logs-query", "code-grep", "run-shell", "file-read"], "answer_contains": ["FAILED", "failover"]}
+  },
+  {
+    "id": "choice-repo-status",
+    "mode": "choice",
+    "prompt": "Is the repository clean or does it have uncommitted changes? Report the status summary.",
+    "expect": {"tools_any": ["git-ops", "run-shell"]}
+  },
+  {
+    "id": "choice-db-count",
+    "mode": "choice",
+    "prompt": "There's a sqlite file store.db in your workspace. Tell me how many rows the 'events' table has.",
+    "setup": ["sqlite3 store.db \"CREATE TABLE events(ts TEXT); INSERT INTO events VALUES('a'),('b'),('c');\""],
+    "expect": {"tools_any": ["db-query", "run-shell", "py-run"], "answer_contains": ["3"]}
+  },
+  {
+    "id": "choice-notify-done",
+    "mode": "choice",
+    "prompt": "Let me know via a notification that the task list is done, then check it was delivered somewhere durable.",
+    "expect": {"tools_any": ["notify"]}
+  },
+  {
+    "id": "choice-uuid-and-timestamp",
+    "mode": "choice",
+    "prompt": "Generate a UUID and the current UTC timestamp. Reply with both.",
+    "expect": {"tools_any": ["util-kit", "py-run", "run-shell"], "judge": "The answer must contain something resembling a UUID (8-4-4-4-12 hex) and a UTC timestamp (ISO-like with Z or +00:00)."}
+  },
+
+  {
+    "id": "e2e-todo-app",
+    "mode": "e2e",
+    "prompt": "Research online what the easiest Python framework is to create a small web application. Then, in your workspace, build a minimal TODO web app with sqlite persistence using that framework (or plain stdlib if you prefer). Track your work with a plan, save your key finding about the framework to memory, and when done write a brief report.md summarizing what you built and which tools you used. Also confirm the app file(s) exist.",
+    "requires": ["net:html.duckduckgo.com"],
+    "expect": {
+      "tools_any": ["web-search", "web-fetch"],
+      "files": [{"path": "report.md", "contains": "TODO"}],
+      "judge": "The agent should have (a) used web-search or web-fetch to research a framework, (b) created a TODO app file (e.g. app.py) using sqlite, (c) written report.md, (d) tracked progress with plan-todo and stored a fact in memory. Judge the ANSWER's summary for completeness, not whether you can verify the files yourself."
+    },
+    "max_rounds": 45, "timeout_s": 900
+  },
+  {
+    "id": "e2e-repo-health",
+    "mode": "e2e",
+    "prompt": "Produce a health report for this repository: current git branch and status, the top-level module map of tools/, how many tools have smoke tests, and any ERROR lines in the last 50 lines of a hypothetical app.log if present (create a sample if needed). Track steps with a todo list, store 'project uses uv + pytest conventions' in memory, and notify me when finished. Put the final report in health.md.",
+    "expect": {
+      "tools_any": ["git-ops", "code-map"],
+      "files": [{"path": "health.md", "contains": "branch"}],
+      "judge": "The health report should mention: git branch/status, a module/symbol overview of tools/, a count of tools with smoke tests, todo tracking, memory storage, and a notification. Grade the ANSWER's completeness against those points."
+    },
+    "max_rounds": 70, "timeout_s": 900
+  }
+]

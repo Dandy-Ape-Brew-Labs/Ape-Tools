@@ -1,0 +1,63 @@
+{
+  "name": "gui-input",
+  "version": "0.1.0",
+  "description": "Keyboard/mouse injection on Wayland+X11 via ydotool (kernel uinput). type text, key combos (ctrl+c, alt+f4), click/move by pixel. Fails fast with setup hints when ydotool/ydotoold are absent.",
+  "use_when": "driving the desktop GUI \u2014 typing, shortcuts, clicks",
+  "category": "gui",
+  "keywords": [
+    "keyboard",
+    "mouse",
+    "click",
+    "type",
+    "key",
+    "input",
+    "ydotool",
+    "gui",
+    "automation",
+    "wayland"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "gui_input.py",
+  "run": "python3 tools/gui-input/gui_input.py <backends|type|key|click|move> [args]",
+  "args": [
+    {
+      "name": "backends",
+      "description": "Report ydotool installed + daemon running + setup hint.",
+      "required": false
+    },
+    {
+      "name": "type <text>",
+      "description": "Type a string; --delay-ms between keys.",
+      "required": false
+    },
+    {
+      "name": "key <combo>",
+      "description": "Combo like ctrl+c, alt+f4, Return. Validated names.",
+      "required": false
+    },
+    {
+      "name": "click <x> <y>",
+      "description": "Move then click; --button left|right|middle.",
+      "required": false
+    },
+    {
+      "name": "move <x> <y>",
+      "description": "Absolute pointer move.",
+      "required": false
+    }
+  ],
+  "env": {
+    "YDOTOOL_SOCKET": "Custom socket path for ydotoold."
+  },
+  "dependencies": [],
+  "stdout": "JSON {sent: true} or backend status.",
+  "exit_codes": {
+    "0": "success",
+    "1": "ydotool error",
+    "2": "unknown key/args",
+    "3": "ydotool or daemon missing"
+  },
+  "notes": "Setup: sudo dnf install ydotool && systemctl --user enable --now ydotoold",
+  "selftest": "tests/gui-input/smoke.sh"
+}

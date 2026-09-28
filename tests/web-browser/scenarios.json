@@ -1,0 +1,57 @@
+[
+  {
+    "id": "nu-headlines",
+    "site": "https://www.nu.nl",
+    "task": "Open this news site, dismiss any cookie or consent screen, then list the 3 most prominent headlines currently on the front page. Answer with ONLY a JSON array of headline strings.",
+    "expect": {
+      "format": "json",
+      "minItems": 3,
+      "judge": "Check ONLY that each item looks like a real news headline (a substantive headline phrase), not navigation text, cookie/consent text, category labels, or boilerplate. You cannot know today's actual headlines, so do NOT reject items for being unfamiliar or surprising."
+    },
+    "maxSteps": 40
+  },
+  {
+    "id": "bbc-headlines",
+    "site": "https://www.bbc.co.uk",
+    "task": "Dismiss any cookie/consent banner, then list the top 3 headlines on this homepage. Answer with ONLY a JSON array of headline strings.",
+    "expect": {
+      "format": "json",
+      "minItems": 3,
+      "judge": "Check ONLY that each item looks like a real news headline (a substantive headline phrase), not navigation text, cookie/consent text, category labels, or boilerplate. You cannot know today's actual headlines, so do NOT reject items for being unfamiliar or surprising."
+    },
+    "maxSteps": 40
+  },
+  {
+    "id": "github-explore-repo",
+    "site": "https://github.com/explore",
+    "task": "Find one repository featured on this page and answer with its name in 'owner/repo' form only — no other text.",
+    "expect": { "regex": "[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+" }
+  },
+  {
+    "id": "hn-top3",
+    "site": "https://news.ycombinator.com",
+    "task": "List the titles of the top 3 stories currently on the front page. Answer with ONLY a JSON array of strings.",
+    "expect": {
+      "format": "json",
+      "minItems": 3,
+      "judge": "Check ONLY that each item looks like a story title (a real headline or submission title), not navigation text, scores/metadata, or boilerplate. Hacker News titles are famously eclectic — quotes, science, DIY, unusual topics are all normal. You cannot know today's actual front page, so do NOT reject items for being surprising or unfamiliar."
+    }
+  },
+  {
+    "id": "arxiv-first-paper",
+    "site": "https://arxiv.org/list/cs.AI/recent",
+    "task": "This is a listing of recent papers. Return the arXiv identifier (format 2501.12345) of the first paper in the list, and nothing else.",
+    "expect": { "regex": "\\d{4}\\.\\d{4,5}" }
+  },
+  {
+    "id": "pubmed-quantum-articles",
+    "site": "https://pubmed.ncbi.nlm.nih.gov/?term=quantum+mechanics",
+    "task": "This is a PubMed search results page for 'quantum mechanics'. Return the titles of 5 articles shown that involve quantum mechanics, as a JSON array of strings.",
+    "expect": {
+      "format": "json",
+      "minItems": 5,
+      "judge": "Check ONLY that each item looks like a scientific article title plausibly on the search topic — not navigation text, filter labels, snippets, PMIDs, DOIs, or boilerplate. You cannot verify the exact current results, so do NOT reject items for being unfamiliar."
+    },
+    "maxSteps": 40
+  }
+]

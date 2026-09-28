@@ -1,0 +1,57 @@
+{
+  "name": "fs-list",
+  "version": "0.1.0",
+  "description": "List a directory one level deep, or as a depth-limited recursive tree. Prunes .git/node_modules/.venv etc. Use for orientation before targeted search.",
+  "use_when": "orienting in a directory or getting a repo tree",
+  "category": "files",
+  "keywords": [
+    "ls",
+    "list",
+    "directory",
+    "tree",
+    "folder",
+    "contents",
+    "orient"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "fs_list.py",
+  "run": "python3 tools/fs-list/fs_list.py [path] [--tree] [--depth N] [--all] [--max N]",
+  "args": [
+    {
+      "name": "path",
+      "description": "Directory to list.",
+      "required": false,
+      "default": "."
+    },
+    {
+      "name": "--tree",
+      "description": "Recursive depth-limited tree output.",
+      "required": false
+    },
+    {
+      "name": "--depth",
+      "description": "Max tree depth.",
+      "required": false,
+      "default": "3"
+    },
+    {
+      "name": "--all",
+      "description": "Include hidden files.",
+      "required": false
+    },
+    {
+      "name": "--max",
+      "description": "Entry cap.",
+      "required": false,
+      "default": "500"
+    }
+  ],
+  "dependencies": [],
+  "stdout": "JSON {path/root, count, entries: [{path,name,type,size?}], capped}.",
+  "exit_codes": {
+    "0": "success",
+    "2": "not a directory / usage error"
+  },
+  "selftest": "tests/fs-list/smoke.sh"
+}

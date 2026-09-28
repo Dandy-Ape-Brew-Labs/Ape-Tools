@@ -1,0 +1,39 @@
+{
+  "name": "sys-info",
+  "version": "0.1.0",
+  "description": "Host resource snapshot: CPU model/cores/load, memory (incl. cgroup container limits), disk free, GPU (nvidia-smi or DRM), battery/AC, network byte counters, hostname/uptime. Missing data degrades to null; never fails the whole call.",
+  "use_when": "choosing context sizes, local-model backends, or checking headroom before heavy work",
+  "category": "util",
+  "keywords": [
+    "resources",
+    "memory",
+    "cpu",
+    "disk",
+    "gpu",
+    "battery",
+    "hardware",
+    "capacity",
+    "host",
+    "platform"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "sys_info.py",
+  "run": "python3 tools/sys-info/sys_info.py [cpu|mem|disk|gpu|power|net|meta|all]",
+  "args": [
+    {
+      "name": "sections",
+      "description": "Positional section names; 'all' (default) emits everything.",
+      "required": false
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "JSON {cpu, mem, disk, gpu, power, net, meta} — sizes in bytes, load as [1m,5m,15m].",
+  "exit_codes": {
+    "0": "success",
+    "2": "usage error"
+  },
+  "notes": "Linux-first (/proc, /sys, cgroup v2). nvidia-smi used when present; otherwise counts DRM devices.",
+  "selftest": "tests/sys-info/smoke.sh"
+}

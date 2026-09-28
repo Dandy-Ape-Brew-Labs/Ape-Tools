@@ -1,0 +1,34 @@
+{
+  "name": "web-browser",
+  "version": "0.1.0",
+  "description": "LLM-driven web browsing agent: a goal-oriented loop where an LM Studio model (OpenAI-compatible) drives the Obscura stealth browser over CDP via a JSON action protocol — navigate, snapshot (markdown + numbered elements), look (screenshot for vision), click by element ref or coordinates, type, scroll, eval. Solves cookie walls and visual interstitials; answers the user's task with real page content.",
+  "use_when": "completing research tasks on live websites via an autonomous LLM-driven browser",
+  "category": "web",
+  "keywords": ["agent", "browse", "llm", "research", "click", "vision", "autonomous", "e2e"],
+  "language": "javascript",
+  "runtime": "node>=18",
+  "entrypoint": "agent.js",
+  "run": "node tools/web-browser/agent.js --task \"<task>\" [--start-url <url>] [--json] [--trace]",
+  "args": [
+    { "name": "--task", "description": "Natural-language task the agent must answer using live pages.", "required": true },
+    { "name": "--start-url", "description": "URL to begin at (agent navigates autonomously otherwise).", "required": false },
+    { "name": "--max-steps", "description": "Max action turns before giving up.", "required": false, "default": "30" },
+    { "name": "--model", "description": "LM Studio model id for the agent loop.", "required": false, "default": "qwen/qwen3-vl-8b" },
+    { "name": "--vision-model", "description": "Separate VL model for screenshots; equal to --model = inline vision.", "required": false },
+    { "name": "--json", "description": "Emit {answer, steps, url, sources, model} JSON instead of bare answer.", "required": false },
+    { "name": "--trace", "description": "Per-step diagnostics on stderr.", "required": false }
+  ],
+  "env": {
+    "LLM_BASE_URL": "OpenAI-compatible endpoint. Default: http://127.0.0.1:1234/v1",
+    "AGENT_MODEL": "Model for the agent loop. Default: qwen/qwen3-vl-8b",
+    "AGENT_VISION_MODEL": "Vision model override; defaults to AGENT_MODEL",
+    "E2E_JUDGE_MODEL": "Model for e2e.js 'judge' rubric validation. Default: qwen/qwen3-vl-8b",
+    "CDP_ENDPOINT": "Obscura CDP endpoint. Default: ws://127.0.0.1:9222",
+    "OBSCURA_BIN": "Path to obscura binary. Default: vendor/obscura/obscura"
+  },
+  "dependencies": ["playwright-core", "obscura binary (vendor/obscura)", "LM Studio at LLM_BASE_URL"],
+  "stdout": "The agent's answer (or JSON wrapper with --json).",
+  "exit_codes": { "0": "task completed", "1": "agent failed / model error / browser error", "2": "usage error" },
+  "e2e": "node tests/web-browser/e2e.js [--only <id>] [--timeout 300] [--trace] [--report-dir dir] — validates answers via deterministic checks plus an optional LLM 'judge' rubric; writes full step traces, screenshots, and verdicts to tests/web-browser/reports/<timestamp>/",
+  "selftest": "tests/web-browser/smoke.sh"
+}

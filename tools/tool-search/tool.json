@@ -1,0 +1,21 @@
+{
+  "name": "tool-search",
+  "version": "0.1.0",
+  "description": "Intent-based search over the tool catalogue. Given a natural-language query describing what you want to do, returns the top-ranked tool manifests (full JSON). Use before guessing a run command.",
+  "use_when": "finding the right tool for a task by describing intent",
+  "category": "meta",
+  "keywords": ["search", "find", "which tool", "intent", "bm25", "select", "lookup", "discover"],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "search.py",
+  "run": "python3 tools/tool-search/search.py <query...> [--select a,b] [--max N] [--names-only]",
+  "args": [
+    { "name": "query", "description": "Search terms describing what you want to do.", "required": true },
+    { "name": "--select", "description": "Comma-separated tool names; returns their full manifests exactly.", "required": false },
+    { "name": "--max", "description": "Maximum results.", "required": false, "default": "5" },
+    { "name": "--names-only", "description": "Print ranked names and scores only.", "required": false }
+  ],
+  "dependencies": [],
+  "stdout": "JSON array of matching tool manifests (or ranked name list with --names-only).",
+  "exit_codes": { "0": "matches found", "1": "no matches", "2": "usage error" }
+}

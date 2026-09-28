@@ -1,0 +1,65 @@
+{
+  "name": "install",
+  "version": "0.1.0",
+  "description": "Install this toolbox to a target prefix — copies the lean runtime payload (tools/, lib/, lockfiles, docs; no tests or git history), syncs Python/Node deps, and generates a bin/ape dispatcher shim. Wraps the repo-root install.sh, which also supports curl-pipe bootstrap on a bare machine.",
+  "use_when": "installing or updating the toolbox at a prefix, or bootstrapping it elsewhere",
+  "category": "meta",
+  "keywords": [
+    "install",
+    "setup",
+    "bootstrap",
+    "deploy",
+    "prefix",
+    "update",
+    "provision"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "install_tool.py",
+  "run": "python3 tools/install/install_tool.py [--prefix DIR] [--tools a,b] [--update] [--no-deps] [--no-node] [--obscura] [--with-tests]",
+  "args": [
+    {
+      "name": "--prefix",
+      "description": "Target directory. Omit for in-place setup of the current tree.",
+      "required": false
+    },
+    {
+      "name": "--tools",
+      "description": "Comma-separated subset; ape/list-tools/tool-search are always included.",
+      "required": false
+    },
+    {
+      "name": "--update",
+      "description": "Replace the managed payload at an existing prefix.",
+      "required": false
+    },
+    {
+      "name": "--no-deps / --no-node",
+      "description": "Skip uv sync and/or npm ci.",
+      "required": false
+    },
+    {
+      "name": "--obscura",
+      "description": "Download the Obscura browser binary into vendor/.",
+      "required": false
+    },
+    {
+      "name": "--with-tests",
+      "description": "Include tests/ in a copy-install (excluded by default).",
+      "required": false
+    }
+  ],
+  "env": {
+    "APE_TOOLS_REPO": "Git URL fetched when install.sh runs piped/standalone.",
+    "APE_TOOLS_PREFIX": "Default prefix for pipe-mode installs (~/.local/opt/ape-tools)."
+  },
+  "dependencies": [],
+  "stdout": "JSON summary: {installed, tools, bin, state}. Progress goes to stderr.",
+  "exit_codes": {
+    "0": "installed",
+    "1": "copy/setup error",
+    "2": "usage error"
+  },
+  "notes": "Only installer-managed paths are replaced on --update; state lives under AGENT_TOOLS_HOME and is untouched.",
+  "selftest": "tests/install/smoke.sh"
+}

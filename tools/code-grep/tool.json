@@ -1,0 +1,93 @@
+{
+  "name": "code-grep",
+  "version": "0.1.0",
+  "description": "Regex content search backed by ripgrep. Modes: files (which files match), content (matching lines with context), count (per-file counts). Always scope with --path/--glob/--type and cap with --max.",
+  "use_when": "searching file contents for a regex or literal",
+  "category": "search",
+  "keywords": [
+    "grep",
+    "search",
+    "regex",
+    "find usages",
+    "where is",
+    "content",
+    "pattern",
+    "ripgrep",
+    "locate symbol"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "code_grep.py",
+  "run": "python3 tools/code-grep/code_grep.py <pattern> [--path DIR] [--glob G] [--type T] [-i] [-C N] [--mode files|content|count] [--max N] [--offset N]",
+  "args": [
+    {
+      "name": "pattern",
+      "description": "Regex (ripgrep syntax; escape literal braces, no lookaround).",
+      "required": true
+    },
+    {
+      "name": "--path",
+      "description": "Search root.",
+      "required": false,
+      "default": "."
+    },
+    {
+      "name": "--glob",
+      "description": "File glob filter (repeatable), e.g. '*.py'.",
+      "required": false
+    },
+    {
+      "name": "--type",
+      "description": "ripgrep file type: py, js, ts, rust, go, ...",
+      "required": false
+    },
+    {
+      "name": "-i",
+      "description": "Case-insensitive.",
+      "required": false
+    },
+    {
+      "name": "-C",
+      "description": "Context lines around matches.",
+      "required": false
+    },
+    {
+      "name": "-A",
+      "description": "Lines after each match.",
+      "required": false
+    },
+    {
+      "name": "-B",
+      "description": "Lines before each match.",
+      "required": false
+    },
+    {
+      "name": "--mode",
+      "description": "files | content | count.",
+      "required": false,
+      "default": "content"
+    },
+    {
+      "name": "--max",
+      "description": "Result cap.",
+      "required": false,
+      "default": "100"
+    },
+    {
+      "name": "--offset",
+      "description": "Paginate results.",
+      "required": false,
+      "default": "0"
+    }
+  ],
+  "dependencies": [
+    "ripgrep (rg on PATH)"
+  ],
+  "stdout": "JSON {total, matches: [{path,line,col,text,context?}]} or {files} or {counts}.",
+  "exit_codes": {
+    "0": "matches found (or files/count mode ran)",
+    "1": "no matches / rg error",
+    "2": "usage error"
+  },
+  "selftest": "tests/code-grep/smoke.sh"
+}

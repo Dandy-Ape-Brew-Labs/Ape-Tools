@@ -1,0 +1,60 @@
+{
+  "name": "web-search",
+  "version": "0.1.0",
+  "description": "Search the web, return JSON {title, url, snippet} results. Backend auto-selects: TAVILY_API_KEY or BRAVE_API_KEY env vars, else a zero-key DuckDuckGo lite scrape. Follow up with web-fetch for the actual page.",
+  "use_when": "searching the web for current facts or documentation",
+  "category": "web",
+  "keywords": [
+    "search",
+    "web",
+    "google",
+    "lookup",
+    "find",
+    "query",
+    "internet",
+    "duckduckgo",
+    "tavily",
+    "brave"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "web_search.py",
+  "run": "python3 tools/web-search/web_search.py <query...> [--max N] [--backend auto|ddg|tavily|brave] [--allowed-domains d1,d2]",
+  "args": [
+    {
+      "name": "query",
+      "description": "Search terms \u2014 keep short, one fact per query.",
+      "required": true
+    },
+    {
+      "name": "--max",
+      "description": "Max results.",
+      "required": false,
+      "default": "5"
+    },
+    {
+      "name": "--backend",
+      "description": "auto | ddg | tavily | brave.",
+      "required": false,
+      "default": "auto"
+    },
+    {
+      "name": "--allowed-domains",
+      "description": "Comma-separated domain allowlist.",
+      "required": false
+    }
+  ],
+  "env": {
+    "TAVILY_API_KEY": "Prefer Tavily backend when set.",
+    "BRAVE_API_KEY": "Prefer Brave backend when set (after Tavily)."
+  },
+  "dependencies": [],
+  "stdout": "JSON {query, backend, count, results: [{title, url, snippet}]}.",
+  "exit_codes": {
+    "0": "results returned",
+    "1": "no results / request failed",
+    "2": "usage error"
+  },
+  "notes": "Snippets are not sources \u2014 fetch the page (web-fetch) before citing a fact.",
+  "selftest": "tests/web-search/smoke.sh"
+}

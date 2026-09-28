@@ -1,0 +1,58 @@
+{
+  "name": "plan-todo",
+  "version": "0.1.0",
+  "description": "Persistent todo/plan state in $AGENT_TOOLS_HOME/todos.json. set a full plan, list it, update/complete items by id, clear. Enforces exactly one in_progress item.",
+  "use_when": "tracking a multi-step plan across a session",
+  "category": "state",
+  "keywords": [
+    "todo",
+    "plan",
+    "task",
+    "checklist",
+    "progress",
+    "steps",
+    "track"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "plan_todo.py",
+  "run": "python3 tools/plan-todo/plan_todo.py <set|list|update|complete|clear> [args]",
+  "args": [
+    {
+      "name": "set --todos JSON|-",
+      "description": "Replace the plan: [{content, status?}] \u2014 status: pending|in_progress|completed.",
+      "required": false
+    },
+    {
+      "name": "list",
+      "description": "Print current todos.",
+      "required": false
+    },
+    {
+      "name": "update <id>",
+      "description": "Change --status and/or --content of item id.",
+      "required": false
+    },
+    {
+      "name": "complete <id>",
+      "description": "Mark item id completed.",
+      "required": false
+    },
+    {
+      "name": "clear",
+      "description": "Remove all todos.",
+      "required": false
+    }
+  ],
+  "env": {
+    "AGENT_TOOLS_HOME": "State root (default ~/.local/share/agent-tools)."
+  },
+  "dependencies": [],
+  "stdout": "JSON todos array or ack object.",
+  "exit_codes": {
+    "0": "success",
+    "1": "unknown id",
+    "2": "invalid input"
+  },
+  "selftest": "tests/plan-todo/smoke.sh"
+}

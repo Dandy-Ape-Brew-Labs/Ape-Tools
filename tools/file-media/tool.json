@@ -1,0 +1,55 @@
+{
+  "name": "file-media",
+  "version": "0.1.0",
+  "description": "Inspect binary media files: image mime + pixel dimensions (PNG/JPEG/GIF/WebP header parsing, no deps), PDF metadata and page text via pdftotext, optional base64 embedding for vision pipelines.",
+  "use_when": "inspecting an image or extracting text/metadata from a PDF",
+  "category": "files",
+  "keywords": [
+    "image",
+    "png",
+    "jpeg",
+    "pdf",
+    "media",
+    "base64",
+    "dimensions",
+    "binary",
+    "picture",
+    "screenshot"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "file_media.py",
+  "run": "python3 tools/file-media/file_media.py <path> [--base64] [--pages 1-5] [--text]",
+  "args": [
+    {
+      "name": "path",
+      "description": "Media file to inspect.",
+      "required": true
+    },
+    {
+      "name": "--base64",
+      "description": "Embed the file as base64 in the JSON result.",
+      "required": false
+    },
+    {
+      "name": "--pages",
+      "description": "PDF page range to extract, e.g. '1-5'.",
+      "required": false
+    },
+    {
+      "name": "--text",
+      "description": "Extract full PDF text.",
+      "required": false
+    }
+  ],
+  "dependencies": [
+    "poppler-utils (pdftotext/pdfinfo \u2014 optional, PDF features only)"
+  ],
+  "stdout": "JSON object: {path, mime, size_bytes, width?, height?, text?, base64?}.",
+  "exit_codes": {
+    "0": "success",
+    "1": "extraction error (missing pdftotext, oversize)",
+    "2": "usage error"
+  },
+  "selftest": "tests/file-media/smoke.sh"
+}

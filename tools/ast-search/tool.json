@@ -1,0 +1,59 @@
+{
+  "name": "ast-search",
+  "version": "0.1.0",
+  "description": "Structural Python search via stdlib ast: defs, imports, call sites, name references, top-level symbols. Matches by syntax not text \u2014 immune to comments/strings false positives.",
+  "use_when": "finding Python symbols/callers semantically instead of grepping",
+  "category": "code",
+  "keywords": [
+    "ast",
+    "symbol",
+    "definition",
+    "callers",
+    "references",
+    "imports",
+    "structural",
+    "python",
+    "semantic",
+    "outline"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "ast_search.py",
+  "run": "python3 tools/ast-search/ast_search.py <defs|imports|calls|symbols|refs> <path> [--name REGEX]",
+  "args": [
+    {
+      "name": "defs <path>",
+      "description": "Function/class defs; --name filters.",
+      "required": true
+    },
+    {
+      "name": "imports <path>",
+      "description": "Import statements, module:name.",
+      "required": true
+    },
+    {
+      "name": "calls <path>",
+      "description": "Call sites; --name required (matches dotted names like obj.m).",
+      "required": true
+    },
+    {
+      "name": "symbols <path>",
+      "description": "Top-level outline {line,end,kind,name,lines}.",
+      "required": true
+    },
+    {
+      "name": "refs <path>",
+      "description": "All Name/attribute references; --name required.",
+      "required": true
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "JSON array of {file, line, col, kind, name, context}.",
+  "exit_codes": {
+    "0": "success",
+    "2": "path missing / bad args"
+  },
+  "notes": "Python only. Unparseable files warn on stderr and are skipped.",
+  "selftest": "tests/ast-search/smoke.sh"
+}

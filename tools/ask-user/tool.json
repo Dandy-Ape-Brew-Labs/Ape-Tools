@@ -1,0 +1,55 @@
+{
+  "name": "ask-user",
+  "version": "0.1.0",
+  "description": "Ask the human a question via file handoff + desktop notification. 'ask' writes $AGENT_TOOLS_HOME/questions/<id>.json and polls answers/<id>.json until --timeout. 'answer' records a reply; 'list'/'read' inspect queue.",
+  "use_when": "blocking on a human decision while staying non-interactive",
+  "category": "interact",
+  "keywords": [
+    "ask",
+    "question",
+    "confirm",
+    "approval",
+    "human",
+    "input",
+    "decision",
+    "prompt",
+    "handoff"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "ask_user.py",
+  "run": "python3 tools/ask-user/ask_user.py <ask|answer|list|read> [args]",
+  "args": [
+    {
+      "name": "ask",
+      "description": "--question TEXT [--options a,b,c] [--timeout SEC] [--no-notify]. Emits {id, answer} on reply; exit 3 on timeout.",
+      "required": false
+    },
+    {
+      "name": "answer <id>",
+      "description": "--text 'reply' or --option N (1-based). Humans/other processes answer here.",
+      "required": false
+    },
+    {
+      "name": "list [--pending]",
+      "description": "All questions, or only unanswered.",
+      "required": false
+    },
+    {
+      "name": "read <id>",
+      "description": "Single question + answer state.",
+      "required": false
+    }
+  ],
+  "env": {
+    "AGENT_TOOLS_HOME": "State root (default ~/.local/share/agent-tools)."
+  },
+  "dependencies": [],
+  "stdout": "JSON question/answer objects.",
+  "exit_codes": {
+    "0": "answered / success",
+    "2": "usage / unknown id",
+    "3": "timeout, still pending"
+  },
+  "selftest": "tests/ask-user/smoke.sh"
+}

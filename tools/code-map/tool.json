@@ -1,0 +1,48 @@
+{
+  "name": "code-map",
+  "version": "0.1.0",
+  "description": "Structural map of a codebase: top-level definitions (functions, classes, types) per file via per-language patterns, or a token-budgeted repo map with --map. Cheap orientation before reading.",
+  "use_when": "mapping a module's top-level symbols or a repo outline",
+  "category": "search",
+  "keywords": [
+    "symbols",
+    "definitions",
+    "functions",
+    "classes",
+    "outline",
+    "repo map",
+    "structure",
+    "overview",
+    "ctags"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "code_map.py",
+  "run": "python3 tools/code-map/code_map.py <path> [--map] [--budget N]",
+  "args": [
+    {
+      "name": "path",
+      "description": "File or directory to map.",
+      "required": true
+    },
+    {
+      "name": "--map",
+      "description": "Print a compact repo map (text) instead of JSON.",
+      "required": false
+    },
+    {
+      "name": "--budget",
+      "description": "Approx. token budget for --map output.",
+      "required": false,
+      "default": "8000"
+    }
+  ],
+  "dependencies": [],
+  "stdout": "JSON {file: [{line, text}]} \u2014 or text repo-map with --map.",
+  "exit_codes": {
+    "0": "success",
+    "2": "usage error"
+  },
+  "notes": "Heuristic (regex), not a real parser \u2014 covers common top-level forms for py/js/ts/go/rs/java/kt/c/cpp/rb/sh/lua/swift.",
+  "selftest": "tests/code-map/smoke.sh"
+}

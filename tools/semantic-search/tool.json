@@ -1,0 +1,58 @@
+{
+  "name": "semantic-search",
+  "version": "0.1.0",
+  "description": "Embedding-based semantic code search. Indexes code chunks (AST-aware for Python) into a local sqlite vector store, queries them with natural language. Embeddings via $LLM_BASE_URL /v1/embeddings (LM Studio or OpenAI-compatible).",
+  "use_when": "asking 'where is X handled' semantically instead of grepping",
+  "category": "search",
+  "keywords": [
+    "semantic",
+    "embedding",
+    "vector",
+    "codebase search",
+    "natural language",
+    "similarity",
+    "rag",
+    "index",
+    "where is"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "semantic_search.py",
+  "run": "python3 tools/semantic-search/semantic_search.py <index|query|stats|clear> [args]",
+  "args": [
+    {
+      "name": "index <path>",
+      "description": "Build or incrementally update the code index for a directory.",
+      "required": false
+    },
+    {
+      "name": "query <text> [--k 8] [--path substr]",
+      "description": "Top-k code chunks matching the natural-language query.",
+      "required": false
+    },
+    {
+      "name": "stats",
+      "description": "Index size: files, chunks, db path/bytes.",
+      "required": false
+    },
+    {
+      "name": "clear",
+      "description": "Drop the whole index.",
+      "required": false
+    }
+  ],
+  "env": {
+    "LLM_BASE_URL": "OpenAI-compatible endpoint root (default http://127.0.0.1:1234/v1).",
+    "AGENT_EMBED_MODEL": "Embedding model id; auto-detected from /v1/models when unset.",
+    "AGENT_TOOLS_HOME": "State root; index lives in <root>/semantic/."
+  },
+  "dependencies": [],
+  "stdout": "JSON {results: [{path, start_line, end_line, score, snippet}]} or index/stats info.",
+  "exit_codes": {
+    "0": "success",
+    "1": "error or empty result set",
+    "2": "usage error",
+    "3": "embedding endpoint unreachable"
+  },
+  "selftest": "tests/semantic-search/smoke.sh"
+}

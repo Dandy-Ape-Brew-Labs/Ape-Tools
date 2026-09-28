@@ -1,0 +1,44 @@
+{
+  "name": "send-file",
+  "version": "0.1.0",
+  "description": "Deliver a produced file to the user: copies it into the notify outbox (outbox/files/), drops a desktop notification with the path, optionally xdg-opens it. Works headless — the outbox record persists.",
+  "use_when": "handing a produced file to the user",
+  "category": "interact",
+  "keywords": [
+    "send",
+    "file",
+    "deliver",
+    "attach",
+    "present",
+    "outbox",
+    "artifact",
+    "download"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "send_file.py",
+  "run": "python3 tools/send-file/send_file.py <send|list> [args]",
+  "args": [
+    {
+      "name": "send <path> [--name n] [--open] [--title t]",
+      "description": "Copy file to outbox, notify, optionally open it.",
+      "required": false
+    },
+    {
+      "name": "list",
+      "description": "List every delivered file with size/mtime.",
+      "required": false
+    }
+  ],
+  "env": {
+    "AGENT_TOOLS_HOME": "State root; files land in <root>/outbox/files/."
+  },
+  "dependencies": [],
+  "stdout": "JSON {delivered, notified, opened} or delivered-file list.",
+  "exit_codes": {
+    "0": "success",
+    "1": "delivery failure",
+    "2": "source not found / bad name"
+  },
+  "selftest": "tests/send-file/smoke.sh"
+}

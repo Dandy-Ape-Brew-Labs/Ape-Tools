@@ -1,0 +1,55 @@
+{
+  "name": "clipboard",
+  "version": "0.1.0",
+  "description": "System clipboard get/set/clear for local agents. Uses wl-copy/wl-paste on Wayland, falls back to xclip or xsel on X11. 'backends' reports which clipboard tools exist.",
+  "use_when": "reading or writing the user's clipboard",
+  "category": "interact",
+  "keywords": [
+    "clipboard",
+    "paste",
+    "copy",
+    "wl-copy",
+    "xclip",
+    "selection",
+    "desktop"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "clipboard.py",
+  "run": "python3 tools/clipboard/clipboard.py <get|set|clear|backends> [args]",
+  "args": [
+    {
+      "name": "get",
+      "description": "Print clipboard contents to stdout (raw, not JSON).",
+      "required": false
+    },
+    {
+      "name": "set [text|--file path]",
+      "description": "Copy text, file contents, or stdin to the clipboard.",
+      "required": false
+    },
+    {
+      "name": "clear",
+      "description": "Empty the clipboard.",
+      "required": false
+    },
+    {
+      "name": "backends",
+      "description": "Report which clipboard tools exist and which would be used.",
+      "required": false
+    }
+  ],
+  "env": {
+    "CLIPBOARD_BACKEND": "Force backend: wl, xclip, or xsel."
+  },
+  "dependencies": [],
+  "stdout": "Clipboard text on 'get' (raw); JSON ack on set/clear/backends.",
+  "exit_codes": {
+    "0": "success",
+    "1": "clipboard tool failed",
+    "2": "usage error",
+    "3": "no clipboard backend installed"
+  },
+  "notes": "Setup: sudo dnf install wl-clipboard (Wayland) or xclip (X11).",
+  "selftest": "tests/clipboard/smoke.sh"
+}

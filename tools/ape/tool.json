@@ -1,0 +1,48 @@
+{
+  "name": "ape",
+  "version": "0.1.0",
+  "description": "Toolbox dispatcher — run any tool as 'ape <name> [args]' from any working directory. Resolves the manifest, picks python3/uv run/node/bash, and execs the entrypoint against the install root.",
+  "use_when": "invoking a toolbox tool without knowing the repo root or interpreter",
+  "category": "meta",
+  "keywords": [
+    "dispatch",
+    "run",
+    "invoke",
+    "entrypoint",
+    "wrapper",
+    "cli",
+    "shim",
+    "alias"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "ape.py",
+  "run": "python3 tools/ape/ape.py <tool> [args...]",
+  "args": [
+    {
+      "name": "tool",
+      "description": "Tool name (directory or manifest name).",
+      "required": true
+    },
+    {
+      "name": "args",
+      "description": "Forwarded verbatim to the tool.",
+      "required": false
+    },
+    {
+      "name": "--list",
+      "description": "Print the tool index (same as 'ape list-tools --format index').",
+      "required": false
+    }
+  ],
+  "dependencies": [],
+  "stdout": "Whatever the invoked tool prints — ape execs, it does not wrap.",
+  "exit_codes": {
+    "0": "the invoked tool's exit code",
+    "1": "tool/entrypoint problem",
+    "2": "usage error or unknown tool",
+    "127": "missing interpreter (uv/node/python3)"
+  },
+  "notes": "Installed prefixes expose this as bin/ape — a generated shim that calls this script.",
+  "selftest": "tests/ape/smoke.sh"
+}

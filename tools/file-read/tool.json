@@ -1,0 +1,78 @@
+{
+  "name": "file-read",
+  "version": "0.1.0",
+  "description": "Read a text file with cat -n line numbers, line ranges (--offset/--limit or --start/--end), head/tail, and output caps. Binary files are refused with a pointer to file-media.",
+  "use_when": "reading a file or a line range of a text file",
+  "category": "files",
+  "keywords": [
+    "read",
+    "view",
+    "cat",
+    "lines",
+    "head",
+    "tail",
+    "range",
+    "source",
+    "log"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "file_read.py",
+  "run": "python3 tools/file-read/file_read.py <path> [--offset N --limit N | --start N --end N | --head N | --tail N]",
+  "args": [
+    {
+      "name": "path",
+      "description": "File path to read.",
+      "required": true
+    },
+    {
+      "name": "--offset",
+      "description": "1-based start line.",
+      "required": false
+    },
+    {
+      "name": "--limit",
+      "description": "Number of lines (with --offset).",
+      "required": false
+    },
+    {
+      "name": "--start",
+      "description": "1-based start line, inclusive.",
+      "required": false
+    },
+    {
+      "name": "--end",
+      "description": "1-based end line, inclusive; -1 = EOF.",
+      "required": false
+    },
+    {
+      "name": "--head",
+      "description": "First N lines.",
+      "required": false
+    },
+    {
+      "name": "--tail",
+      "description": "Last N lines.",
+      "required": false
+    },
+    {
+      "name": "--no-numbers",
+      "description": "Omit line-number prefixes.",
+      "required": false
+    },
+    {
+      "name": "--max-lines",
+      "description": "Output cap in lines.",
+      "required": false,
+      "default": "2000"
+    }
+  ],
+  "dependencies": [],
+  "stdout": "File content with 'N\\t' line-number prefixes. Truncation is announced on stderr.",
+  "exit_codes": {
+    "0": "success",
+    "1": "read error or binary file",
+    "2": "usage error (bad path/range)"
+  },
+  "selftest": "tests/file-read/smoke.sh"
+}

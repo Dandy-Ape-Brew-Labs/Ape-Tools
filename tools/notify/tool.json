@@ -1,0 +1,49 @@
+{
+  "name": "notify",
+  "version": "0.1.0",
+  "description": "Human-facing notifications: desktop notify-send plus a durable file outbox at $AGENT_TOOLS_HOME/outbox/. 'finish' is the terminal signal for agent loops.",
+  "use_when": "alerting the human a task needs attention or is complete",
+  "category": "interact",
+  "keywords": [
+    "notify",
+    "notification",
+    "alert",
+    "desktop",
+    "finish",
+    "done",
+    "signal",
+    "outbox",
+    "message"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "notify.py",
+  "run": "python3 tools/notify/notify.py <send|outbox|finish> [args]",
+  "args": [
+    {
+      "name": "send",
+      "description": "--title T [--body B]. Desktop popup + outbox record.",
+      "required": false
+    },
+    {
+      "name": "outbox",
+      "description": "List every notification sent.",
+      "required": false
+    },
+    {
+      "name": "finish",
+      "description": "--message M. Terminal 'done' signal + desktop notify.",
+      "required": false
+    }
+  ],
+  "env": {
+    "AGENT_TOOLS_HOME": "State root; notifications also land in <root>/outbox/."
+  },
+  "dependencies": [],
+  "stdout": "JSON acknowledgement.",
+  "exit_codes": {
+    "0": "success"
+  },
+  "notes": "Works headless: notification is recorded to outbox even when notify-send is absent.",
+  "selftest": "tests/notify/smoke.sh"
+}

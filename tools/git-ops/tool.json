@@ -1,0 +1,68 @@
+{
+  "name": "git-ops",
+  "version": "0.1.0",
+  "description": "Structured local git ops with JSON output: status, diff, log, commit, branch, checkout, show. Wraps git in --cwd (default '.').",
+  "use_when": "inspecting or changing local git state",
+  "category": "git",
+  "keywords": [
+    "git",
+    "status",
+    "diff",
+    "commit",
+    "branch",
+    "checkout",
+    "log",
+    "vcs",
+    "version control"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "git_ops.py",
+  "run": "python3 tools/git-ops/git_ops.py [--cwd DIR] <status|diff|log|commit|branch|checkout|show> [args]",
+  "args": [
+    {
+      "name": "status",
+      "description": "{branch, files[{xy,path}], clean}.",
+      "required": false
+    },
+    {
+      "name": "diff",
+      "description": "--cached, --stat, --file F. Raw diff on stdout.",
+      "required": false
+    },
+    {
+      "name": "log [-n N]",
+      "description": "JSON commits or --oneline text.",
+      "required": false
+    },
+    {
+      "name": "commit",
+      "description": "--message required; --files limits staging.",
+      "required": false
+    },
+    {
+      "name": "branch",
+      "description": "List branches + current.",
+      "required": false
+    },
+    {
+      "name": "checkout <ref> [-b]",
+      "description": "Switch or create branch.",
+      "required": false
+    },
+    {
+      "name": "show <ref>",
+      "description": "Show a commit; --stat.",
+      "required": false
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "JSON for status/log/branch/commit/checkout; raw patch text for diff/show.",
+  "exit_codes": {
+    "0": "success",
+    "1": "git error",
+    "2": "not a repo"
+  },
+  "selftest": "tests/git-ops/smoke.sh"
+}

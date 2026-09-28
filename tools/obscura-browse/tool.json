@@ -1,0 +1,33 @@
+{
+  "name": "obscura-browse",
+  "version": "0.1.0",
+  "description": "Browse a URL with the Obscura headless browser (Rust, V8, anti-detect) driven by Playwright over CDP. Returns page content as a JSON object — markdown, text, HTML, links, evaluated JS, or a screenshot. Auto-starts 'obscura serve' when the CDP endpoint is not reachable.",
+  "use_when": "fetching JS-rendered or bot-protected web pages when web-fetch is not enough",
+  "category": "web",
+  "keywords": ["browser", "javascript", "render", "screenshot", "scrape", "cdp", "stealth", "page"],
+  "language": "javascript",
+  "runtime": "node>=18",
+  "entrypoint": "browse.js",
+  "run": "node tools/obscura-browse/browse.js <url> [options]",
+  "args": [
+    { "name": "url", "description": "URL to navigate to.", "required": true },
+    { "name": "--format", "description": "markdown | text | html", "required": false, "default": "markdown" },
+    { "name": "--links", "description": "Include all anchor links in output.", "required": false },
+    { "name": "--eval", "description": "JS expression evaluated in the page; result returned as 'result'.", "required": false },
+    { "name": "--selector", "description": "Wait for CSS selector; scopes text/html extraction to it.", "required": false },
+    { "name": "--screenshot", "description": "Save full-page PNG screenshot to path.", "required": false },
+    { "name": "--wait-until", "description": "load | domcontentloaded | networkidle", "required": false, "default": "load" },
+    { "name": "--timeout", "description": "Navigation/extraction timeout in ms.", "required": false, "default": "30000" },
+    { "name": "--cdp", "description": "CDP WebSocket endpoint.", "required": false, "default": "ws://127.0.0.1:9222" },
+    { "name": "--no-stealth", "description": "Disable stealth mode when starting the server (default: on if the installed binary supports it).", "required": false },
+    { "name": "--no-server", "description": "Fail instead of auto-starting obscura serve.", "required": false }
+  ],
+  "env": {
+    "CDP_ENDPOINT": "CDP WebSocket endpoint. Default: ws://127.0.0.1:9222",
+    "OBSCURA_BIN": "Path to obscura binary. Default: vendor/obscura/obscura, else PATH"
+  },
+  "dependencies": ["playwright-core", "obscura binary (vendor/obscura, see install.sh)"],
+  "stdout": "JSON object: {url, title, format?, content?|result?, links?, screenshot?}",
+  "exit_codes": { "0": "success", "1": "runtime error (navigation, CDP, server)", "2": "usage error" },
+  "notes": "Obscura blocks private/loopback/LAN URLs by default; the tool passes --allow-private-network to the server it starts when the URL is private. A pre-existing server without that flag will still refuse private URLs."
+}

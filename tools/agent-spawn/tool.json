@@ -1,0 +1,44 @@
+{
+  "name": "agent-spawn",
+  "version": "0.1.0",
+  "description": "Spawn a sub-agent through an installed agent CLI (claude, gemini) and capture its output synchronously. 'backends' reports which CLIs exist; auto prefers claude.",
+  "use_when": "delegating a self-contained subtask to another agent",
+  "category": "orchestrate",
+  "keywords": [
+    "spawn",
+    "subagent",
+    "delegate",
+    "subtask",
+    "claude",
+    "gemini",
+    "agent",
+    "fan-out",
+    "parallel"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "agent_spawn.py",
+  "run": "python3 tools/agent-spawn/agent_spawn.py <backends|run> [args]",
+  "args": [
+    {
+      "name": "backends",
+      "description": "JSON map of backend -> installed.",
+      "required": false
+    },
+    {
+      "name": "run <prompt>",
+      "description": "Positional/--prompt/stdin. --backend auto|claude|gemini, --cwd, --timeout (default 600s), --dangerous (skip claude permission prompts).",
+      "required": false
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "JSON {backend, exit, output, stderr}.",
+  "exit_codes": {
+    "0": "child exited 0",
+    "2": "usage / backend missing",
+    "4": "timeout",
+    "5": "child exited nonzero"
+  },
+  "selftest": "tests/agent-spawn/smoke.sh"
+}

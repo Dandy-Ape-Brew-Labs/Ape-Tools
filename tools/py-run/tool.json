@@ -1,0 +1,59 @@
+{
+  "name": "py-run",
+  "version": "0.1.0",
+  "description": "Execute a Python snippet or script in the repo venv (uv run) or system python3 (--system). Returns JSON {exit, stdout, stderr, duration_ms}. For a stateful REPL use proc: start 'python3 -i' then write.",
+  "use_when": "running a Python snippet or script file",
+  "category": "exec",
+  "keywords": [
+    "python",
+    "execute",
+    "run code",
+    "eval",
+    "script",
+    "repl",
+    "interpreter",
+    "snippet"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "py_run.py",
+  "run": "python3 tools/py-run/py_run.py [-c CODE | script.py] [script args...] [--cwd DIR] [--timeout S] [--system]",
+  "args": [
+    {
+      "name": "target",
+      "description": "Script path, or code when -c is given.",
+      "required": true
+    },
+    {
+      "name": "-c",
+      "description": "Treat target as inline code.",
+      "required": false
+    },
+    {
+      "name": "--cwd",
+      "description": "Working directory.",
+      "required": false,
+      "default": "."
+    },
+    {
+      "name": "--timeout",
+      "description": "Seconds before kill.",
+      "required": false,
+      "default": "60"
+    },
+    {
+      "name": "--system",
+      "description": "Use system python3 instead of the repo venv.",
+      "required": false
+    }
+  ],
+  "dependencies": [
+    "uv (for repo venv; falls back to python3)"
+  ],
+  "stdout": "JSON {exit, stdout, stderr, duration_ms, truncated, interpreter}.",
+  "exit_codes": {
+    "0": "code ran (check 'exit' field)",
+    "2": "usage error"
+  },
+  "selftest": "tests/py-run/smoke.sh"
+}

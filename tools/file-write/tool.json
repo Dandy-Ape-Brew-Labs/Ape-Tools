@@ -1,0 +1,49 @@
+{
+  "name": "file-write",
+  "version": "0.1.0",
+  "description": "Create or fully overwrite a file. Parent directories are auto-created. Overwriting requires --force so stale content is never silently destroyed; --append appends instead.",
+  "use_when": "creating a new file or fully rewriting an existing one",
+  "category": "files",
+  "keywords": [
+    "write",
+    "create",
+    "overwrite",
+    "save",
+    "new file",
+    "append"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "file_write.py",
+  "run": "python3 tools/file-write/file_write.py <path> [content | -] [--force] [--append]",
+  "args": [
+    {
+      "name": "path",
+      "description": "Target file path.",
+      "required": true
+    },
+    {
+      "name": "content",
+      "description": "Inline content, or '-' / omitted to read stdin.",
+      "required": false
+    },
+    {
+      "name": "--force",
+      "description": "Required to overwrite an existing file.",
+      "required": false
+    },
+    {
+      "name": "--append",
+      "description": "Append instead of overwrite (no --force needed).",
+      "required": false
+    }
+  ],
+  "dependencies": [],
+  "stdout": "JSON: {path, bytes, action: created|overwritten|appended}.",
+  "exit_codes": {
+    "0": "written",
+    "1": "exists without --force, or I/O error",
+    "2": "usage error"
+  },
+  "selftest": "tests/file-write/smoke.sh"
+}

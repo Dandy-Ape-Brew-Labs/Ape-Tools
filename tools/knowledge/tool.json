@@ -1,0 +1,65 @@
+{
+  "name": "knowledge",
+  "version": "0.1.0",
+  "description": "RAG over local document stores: index markdown/text/html/pdf corpora into named sqlite vector stores, query with natural language, get chunks back with source + heading citations. Embeddings via $LLM_BASE_URL /v1/embeddings.",
+  "use_when": "answering questions from your own document corpus (RAG)",
+  "category": "search",
+  "keywords": [
+    "rag",
+    "knowledge base",
+    "retrieve",
+    "corpus",
+    "documents",
+    "embedding",
+    "vector",
+    "chunks",
+    "citation",
+    "memory"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "knowledge.py",
+  "run": "python3 tools/knowledge/knowledge.py <add|query|list|remove|stats> [args]",
+  "args": [
+    {
+      "name": "add <name> <path>",
+      "description": "Index a file or directory into named store (incremental by content hash).",
+      "required": false
+    },
+    {
+      "name": "query <text> [--store name|*] [--k 6]",
+      "description": "Top-k chunks across stores with source/heading/score.",
+      "required": false
+    },
+    {
+      "name": "list",
+      "description": "All stores with file/chunk counts.",
+      "required": false
+    },
+    {
+      "name": "remove <name>",
+      "description": "Delete a store.",
+      "required": false
+    },
+    {
+      "name": "stats <name>",
+      "description": "Store size details.",
+      "required": false
+    }
+  ],
+  "env": {
+    "LLM_BASE_URL": "OpenAI-compatible endpoint root (default http://127.0.0.1:1234/v1).",
+    "AGENT_EMBED_MODEL": "Embedding model id; auto-detected from /v1/models when unset.",
+    "AGENT_TOOLS_HOME": "State root; stores live in <root>/knowledge/."
+  },
+  "dependencies": [],
+  "stdout": "JSON {results: [{store, source, heading, score, text}]} or store info.",
+  "exit_codes": {
+    "0": "success",
+    "1": "error or empty result set",
+    "2": "usage error (bad name, missing path/store)",
+    "3": "embedding endpoint unreachable"
+  },
+  "notes": "PDF support needs pdftotext (poppler-utils); files are skipped with a warning when absent.",
+  "selftest": "tests/knowledge/smoke.sh"
+}

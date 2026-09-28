@@ -1,0 +1,13 @@
+{
+  "name": "agent-tools",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Scripts and tools intended to be invoked by AI agents",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "playwright-core": "1.63.0"
+  }
+}

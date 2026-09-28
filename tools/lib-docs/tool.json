@@ -1,0 +1,51 @@
+{
+  "name": "lib-docs",
+  "version": "0.1.0",
+  "description": "Library documentation lookup via DevDocs docsets (836 libraries, zero-key). Resolves a library name to its docset, searches the index, and can fetch excerpts or full pages from cached db.json — a Context7-style 'current docs' source.",
+  "use_when": "needing current library API docs instead of stale memory",
+  "category": "web",
+  "keywords": [
+    "docs",
+    "documentation",
+    "library",
+    "api",
+    "reference",
+    "devdocs",
+    "context7",
+    "manual",
+    "lookup"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "lib_docs.py",
+  "run": "python3 tools/lib-docs/lib_docs.py <libraries|docs|page> [args]",
+  "args": [
+    {
+      "name": "libraries [filter]",
+      "description": "List available docsets (name, slug, version, alias).",
+      "required": false
+    },
+    {
+      "name": "docs <lib> [query] [--max N] [--excerpt]",
+      "description": "Ranked index entries; --excerpt adds text from db.json.",
+      "required": false
+    },
+    {
+      "name": "page <lib> <path>",
+      "description": "Full text of a doc page (paths from 'docs').",
+      "required": false
+    }
+  ],
+  "env": {
+    "AGENT_TOOLS_HOME": "State root; docset caches live in <root>/lib-docs/."
+  },
+  "dependencies": [],
+  "stdout": "JSON entry lists; raw page text on 'page'.",
+  "exit_codes": {
+    "0": "success",
+    "1": "no results or fetch failure",
+    "2": "unknown library or page path"
+  },
+  "notes": "docs.json cached 24h; db.json revalidated per docset mtime.",
+  "selftest": "tests/lib-docs/smoke.sh"
+}

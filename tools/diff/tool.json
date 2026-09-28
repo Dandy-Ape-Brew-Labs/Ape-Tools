@@ -1,0 +1,52 @@
+{
+  "name": "diff",
+  "version": "0.1.0",
+  "description": "Unified diffs between two files or directory trees, plus a JSON change summary (--stat). Exit code mirrors diff(1): 0 identical, 1 differences, 2 error — so agents can branch on 'did anything change'.",
+  "use_when": "comparing file versions, generated vs expected output, or directory trees",
+  "category": "files",
+  "keywords": [
+    "diff",
+    "compare",
+    "changes",
+    "delta",
+    "unified",
+    "patch",
+    "expected",
+    "regression"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "diff_tool.py",
+  "run": "python3 tools/diff/diff_tool.py <a> <b> [--context N] [--recursive] [--stat]",
+  "args": [
+    {
+      "name": "a b",
+      "description": "Two files or two directories.",
+      "required": true
+    },
+    {
+      "name": "--context N",
+      "description": "Context lines around changes (default 3).",
+      "required": false
+    },
+    {
+      "name": "--recursive",
+      "description": "Recurse into subdirectories for dir comparisons.",
+      "required": false
+    },
+    {
+      "name": "--stat",
+      "description": "Emit JSON {changed_files, files:[{file,added,removed}]} instead of the diff text.",
+      "required": false
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "Unified diff text, or JSON summary with --stat.",
+  "exit_codes": {
+    "0": "identical",
+    "1": "differences found",
+    "2": "error (missing path, no diff binary for dirs)"
+  },
+  "selftest": "tests/diff/smoke.sh"
+}

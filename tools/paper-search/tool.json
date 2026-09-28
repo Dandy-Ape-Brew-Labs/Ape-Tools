@@ -1,0 +1,56 @@
+{
+  "name": "paper-search",
+  "version": "0.1.0",
+  "description": "Academic paper search across PubMed, arXiv, and Semantic Scholar — all zero-key. 'all' merges sources and dedupes by title. Returns ids (PMID/arXiv/S2), authors, year, abstract, url, pdf, doi.",
+  "use_when": "finding peer-reviewed papers or preprints by topic",
+  "category": "web",
+  "keywords": [
+    "papers",
+    "academic",
+    "pubmed",
+    "arxiv",
+    "semantic scholar",
+    "research",
+    "doi",
+    "citation",
+    "literature",
+    "science"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "paper_search.py",
+  "run": "python3 tools/paper-search/paper_search.py \"query\" [--source all] [--max 10] [--year-min N]",
+  "args": [
+    {
+      "name": "query",
+      "description": "Search terms (positional).",
+      "required": true
+    },
+    {
+      "name": "--source pubmed|arxiv|s2|all",
+      "description": "Restrict or merge sources (default all).",
+      "required": false
+    },
+    {
+      "name": "--max N",
+      "description": "Cap results per source and total (default 10).",
+      "required": false
+    },
+    {
+      "name": "--year-min N",
+      "description": "Only papers from year N onward.",
+      "required": false
+    }
+  ],
+  "env": {
+    "S2_API_KEY": "Optional Semantic Scholar key — lifts the keyless rate limit."
+  },
+  "dependencies": [],
+  "stdout": "JSON {results: [{source, id, title, authors, year, abstract, url, pdf, doi}]}.",
+  "exit_codes": {
+    "0": "results found",
+    "1": "no results or a single-source search failed",
+    "2": "usage error"
+  },
+  "selftest": "tests/paper-search/smoke.sh"
+}

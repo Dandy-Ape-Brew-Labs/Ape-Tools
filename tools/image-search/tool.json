@@ -1,0 +1,50 @@
+{
+  "name": "image-search",
+  "version": "0.1.0",
+  "description": "Image search returning image/thumbnail/source URLs. Zero-key DuckDuckGo images backend (vqd token + i.js), or Brave Images API when BRAVE_API_KEY is set. Same backend-selection convention as web-search.",
+  "use_when": "finding visual references — diagrams, pinouts, layouts, photos",
+  "category": "web",
+  "keywords": [
+    "image",
+    "search",
+    "pictures",
+    "photos",
+    "diagrams",
+    "visual",
+    "duckduckgo",
+    "brave"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "image_search.py",
+  "run": "python3 tools/image-search/image_search.py \"query\" [--max 10] [--backend auto|ddg|brave]",
+  "args": [
+    {
+      "name": "query",
+      "description": "Search terms (positional).",
+      "required": true
+    },
+    {
+      "name": "--max N",
+      "description": "Cap results (default 10).",
+      "required": false
+    },
+    {
+      "name": "--backend auto|ddg|brave",
+      "description": "auto = brave if BRAVE_API_KEY set else ddg.",
+      "required": false
+    }
+  ],
+  "env": {
+    "BRAVE_API_KEY": "Enables the Brave Images backend."
+  },
+  "dependencies": [],
+  "stdout": "JSON {results: [{title, image_url, thumb_url, source_url, width, height}]}.",
+  "exit_codes": {
+    "0": "results found",
+    "1": "no results or backend failure",
+    "2": "usage error / missing API key"
+  },
+  "notes": "DDG images uses an unofficial token flow and may break; prefer --backend brave for stability.",
+  "selftest": "tests/image-search/smoke.sh"
+}

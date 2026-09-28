@@ -1,0 +1,27 @@
+{
+  "name": "privacy-scan",
+  "version": "0.1.0",
+  "description": "Scan a directory tree for personal data and secrets that shouldn't be committed: private/LAN IPv4 addresses, home-directory paths (/home/*, /Users/*, C:\\Users\\*), emails, API-token shapes (sk-, ghp_, AKIA, JWTs, Bearer), private keys, MAC addresses. Gitignored files are skipped; doc IP ranges and 127.x are allowed. Extra personal patterns load from a local file so names never live in the repo.",
+  "use_when": "checking a repo for leaked personal data, secrets, or private IPs before committing or publishing",
+  "category": "security",
+  "keywords": ["privacy", "secrets", "pii", "scan", "leak", "ip address", "audit", "hygiene", "personal data"],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "privacy_scan.py",
+  "run": "python3 tools/privacy-scan/privacy_scan.py [path] [--patterns FILE]",
+  "args": [
+    { "name": "path", "description": "Directory to scan (default: repo root).", "required": false },
+    { "name": "--patterns", "description": "Extra pattern file; one literal or 'regex:...' per line. Repeatable.", "required": false },
+    { "name": "--include-ignored", "description": "Also scan gitignored files.", "required": false }
+  ],
+  "env": {
+    "PRIVACY_PATTERNS_FILE": "Extra pattern file (default $AGENT_TOOLS_HOME/privacy-patterns.txt).",
+    "PRIVACY_EXTRA_PATTERNS": "Newline-separated extra literal patterns.",
+    "AGENT_TOOLS_HOME": "State root; default pattern file lives there."
+  },
+  "dependencies": [],
+  "stdout": "JSON {ok, root, scanned, hits: [{file, line, kind, match, text}]}.",
+  "exit_codes": { "0": "clean — no hits", "1": "hits found", "2": "usage error" },
+  "notes": "Keep personal names/hosts in $AGENT_TOOLS_HOME/privacy-patterns.txt — never in the repo itself.",
+  "selftest": "tests/privacy-scan/smoke.sh"
+}

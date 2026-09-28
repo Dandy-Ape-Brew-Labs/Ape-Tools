@@ -1,0 +1,28 @@
+{
+  "name": "web-browser-mcp",
+  "version": "0.1.0",
+  "description": "Python MCP server driving the Obscura stealth browser over CDP — port of tools/web-browser. Interactive browser_* tools (navigate, snapshot with numbered element refs, look/screenshot, click by ref or shadow-piercing text, type, press, scroll, back, eval, wait) share one persistent page so an MCP-capable agent drives it directly. browser_browse runs the autonomous LM Studio agent loop (same JSON action protocol as agent.js) and returns {answer, steps, url, sources, model}.",
+  "use_when": "driving the stealth browser from an MCP client, interactively or autonomously",
+  "category": "web",
+  "keywords": ["mcp", "browser", "stealth", "cdp", "agent", "browse", "playwright", "stdio", "vision", "autonomous"],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "server.py",
+  "run": "uv run tools/web-browser-mcp/server.py",
+  "args": [
+    { "name": "--selfcheck", "description": "List registered MCP tools and exit (no browser needed).", "required": false }
+  ],
+  "env": {
+    "LLM_BASE_URL": "OpenAI-compatible endpoint for browser_browse. Default: http://127.0.0.1:1234/v1",
+    "AGENT_MODEL": "Model for the browse agent loop. Default: qwen/qwen3-vl-8b",
+    "AGENT_VISION_MODEL": "Vision model override; defaults to AGENT_MODEL",
+    "LLM_TIMEOUT_MS": "Per-LLM-call timeout. Default: 180000",
+    "CDP_ENDPOINT": "Obscura CDP endpoint. Default: ws://127.0.0.1:9222",
+    "OBSCURA_BIN": "Path to obscura binary. Default: vendor/obscura/obscura"
+  },
+  "dependencies": ["mcp", "playwright", "obscura binary (vendor/obscura)", "LM Studio at LLM_BASE_URL (browser_browse only)"],
+  "stdout": "MCP protocol frames (stdio) — not human-readable.",
+  "exit_codes": { "0": "clean shutdown / selfcheck ok", "1": "startup failure", "2": "usage error" },
+  "notes": "Client config: {\"command\": \"uv\", \"args\": [\"run\", \"<repo>/tools/web-browser-mcp/server.py\"]}. browser_look returns ImageContent for vision clients. Interactive tools keep one persistent page across calls; browser_browse uses a fresh context per call. Auto-starts 'obscura serve' when the CDP endpoint is unreachable.",
+  "selftest": "tests/web-browser-mcp/smoke.sh"
+}

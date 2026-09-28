@@ -1,0 +1,64 @@
+{
+  "name": "nb-tool",
+  "version": "0.1.0",
+  "description": "Jupyter notebook (.ipynb) ops without a kernel: list/read/set/add/delete cells, inspect outputs, clear outputs. Pure JSON document manipulation.",
+  "use_when": "reading or editing notebooks programmatically",
+  "category": "code",
+  "keywords": [
+    "jupyter",
+    "notebook",
+    "ipynb",
+    "cell",
+    "nbformat",
+    "outputs"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "nb_tool.py",
+  "run": "python3 tools/nb-tool/nb_tool.py <list|read|outputs|set|add|delete|clear-outputs> <nb> [args]",
+  "args": [
+    {
+      "name": "list <nb>",
+      "description": "Cell index/type/preview.",
+      "required": true
+    },
+    {
+      "name": "read <nb>",
+      "description": "Source, all or --cell N.",
+      "required": true
+    },
+    {
+      "name": "outputs <nb>",
+      "description": "Rendered outputs, all or --cell N.",
+      "required": true
+    },
+    {
+      "name": "set <nb>",
+      "description": "--cell N --text (or stdin) replaces source.",
+      "required": true
+    },
+    {
+      "name": "add <nb>",
+      "description": "--type code|markdown|raw --text --at N.",
+      "required": true
+    },
+    {
+      "name": "delete <nb>",
+      "description": "--cell N.",
+      "required": true
+    },
+    {
+      "name": "clear-outputs <nb>",
+      "description": "Strip all cell outputs.",
+      "required": true
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "JSON metadata or raw cell source.",
+  "exit_codes": {
+    "0": "success",
+    "2": "bad notebook / cell index"
+  },
+  "selftest": "tests/nb-tool/smoke.sh"
+}

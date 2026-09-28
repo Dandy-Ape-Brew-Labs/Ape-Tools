@@ -1,0 +1,67 @@
+{
+  "name": "github",
+  "version": "0.1.0",
+  "description": "GitHub operations via the authenticated gh CLI: auth, api, pr list/view/create/merge/close, issue list/view/create/close, repo view, search, and a raw 'run --' escape hatch. Reference connector for external services.",
+  "use_when": "interacting with GitHub \u2014 PRs, issues, repos, code search, API calls",
+  "category": "integrate",
+  "keywords": [
+    "github",
+    "pr",
+    "pull request",
+    "issue",
+    "repo",
+    "gh",
+    "merge",
+    "review",
+    "api",
+    "search"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "github.py",
+  "run": "python3 tools/github/github.py <auth|api|pr|issue|repo|search|run> [args]",
+  "args": [
+    {
+      "name": "auth",
+      "description": "Authenticated user info.",
+      "required": false
+    },
+    {
+      "name": "api <endpoint>",
+      "description": "Raw gh api; --method, --field k=v.",
+      "required": true
+    },
+    {
+      "name": "pr|issue <op>",
+      "description": "list (--state --limit --repo), view <num>, create --title [--body] [--base --head for pr], close <num>, merge <num> (pr).",
+      "required": false
+    },
+    {
+      "name": "repo view",
+      "description": "Repo metadata; --repo owner/name.",
+      "required": false
+    },
+    {
+      "name": "search <query>",
+      "description": "--type code|issues|repos|commits, --limit.",
+      "required": true
+    },
+    {
+      "name": "run -- <gh args>",
+      "description": "Escape hatch for any gh subcommand.",
+      "required": false
+    }
+  ],
+  "env": {
+    "GH_TOKEN/GITHUB_TOKEN": "Used by gh if set; keyring auth otherwise."
+  },
+  "dependencies": [],
+  "stdout": "JSON (gh's --json output passed through).",
+  "exit_codes": {
+    "0": "success",
+    "1": "gh error",
+    "2": "gh not installed/usage",
+    "3": "not authenticated"
+  },
+  "selftest": "tests/github/smoke.sh"
+}

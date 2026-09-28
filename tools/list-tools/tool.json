@@ -1,0 +1,28 @@
+{
+  "name": "list-tools",
+  "version": "0.2.0",
+  "description": "Lists all tools in this repository by scanning tools/*/tool.json manifests. Use this first to discover available tools, their run commands, arguments, and environment variables.",
+  "use_when": "discovering which tools exist or getting a compact catalogue index",
+  "category": "meta",
+  "keywords": ["catalog", "discover", "list", "index", "manifest"],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "list_tools.py",
+  "run": "python3 tools/list-tools/list_tools.py [--format json|index] [--full]",
+  "args": [
+    {
+      "name": "--format",
+      "description": "Output format: 'table' (human-readable), 'json' (machine-readable), or 'index' (one line per tool — the Tier-1 discovery index).",
+      "required": false,
+      "default": "table"
+    },
+    {
+      "name": "--full",
+      "description": "Include args, env vars, and dependency details in the output.",
+      "required": false
+    }
+  ],
+  "dependencies": [],
+  "stdout": "Tool catalogue as a table, JSON array, or index lines.",
+  "exit_codes": { "0": "success", "2": "invalid CLI arguments" }
+}

@@ -1,0 +1,70 @@
+{
+  "name": "memory",
+  "version": "0.1.0",
+  "description": "Persistent cross-session memory as markdown files under $AGENT_TOOLS_HOME/memories/. Commands mirror the Anthropic memory tool: list, view, create, str_replace, insert, delete, rename.",
+  "use_when": "storing or recalling durable facts across sessions",
+  "category": "state",
+  "keywords": [
+    "memory",
+    "remember",
+    "persist",
+    "fact",
+    "knowledge",
+    "note",
+    "recall",
+    "preference"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "memory.py",
+  "run": "python3 tools/memory/memory.py <list|view|create|str_replace|insert|delete|rename> [args]",
+  "args": [
+    {
+      "name": "list",
+      "description": "List memory files.",
+      "required": false
+    },
+    {
+      "name": "view <name>",
+      "description": "Print with line numbers; --range a-b.",
+      "required": false
+    },
+    {
+      "name": "create <name>",
+      "description": "Write a memory file; --text or stdin; --force overwrites.",
+      "required": false
+    },
+    {
+      "name": "str_replace <name>",
+      "description": "--old/--new exact replacement (must match once).",
+      "required": false
+    },
+    {
+      "name": "insert <name>",
+      "description": "--line N --text inserts after line N.",
+      "required": false
+    },
+    {
+      "name": "delete <name>",
+      "description": "Remove a memory file.",
+      "required": false
+    },
+    {
+      "name": "rename <old> <new>",
+      "description": "Rename a memory file.",
+      "required": false
+    }
+  ],
+  "env": {
+    "AGENT_TOOLS_HOME": "State root; memories live under <root>/memories/."
+  },
+  "dependencies": [],
+  "stdout": "JSON acks, file list, or numbered file content (view).",
+  "exit_codes": {
+    "0": "success",
+    "1": "not found / ambiguous match",
+    "2": "usage error"
+  },
+  "notes": "Write concise dated facts, never secrets or transient task state. Read memory at session start.",
+  "selftest": "tests/memory/smoke.sh"
+}

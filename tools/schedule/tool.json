@@ -1,0 +1,54 @@
+{
+  "name": "schedule",
+  "version": "0.1.0",
+  "description": "Schedule commands via transient systemd user timers (agent-tools-<name>.*). once --in/--at for one-shots, recurring --calendar for repeating, list/cancel to manage. No daemon required.",
+  "use_when": "running a command later or periodically",
+  "category": "orchestrate",
+  "keywords": [
+    "schedule",
+    "cron",
+    "timer",
+    "later",
+    "remind",
+    "recurring",
+    "periodic",
+    "systemd",
+    "defer"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "schedule.py",
+  "run": "python3 tools/schedule/schedule.py <once|recurring|list|cancel> [args]",
+  "args": [
+    {
+      "name": "once",
+      "description": "--in SPAN (30s, 15min, 2h) or --at 'YYYY-MM-DD HH:MM', plus --command and optional --name.",
+      "required": false
+    },
+    {
+      "name": "recurring",
+      "description": "--calendar SPEC (systemd calendar e.g. '*:0/15', 'Mon..Fri 09:00') plus --command.",
+      "required": false
+    },
+    {
+      "name": "list",
+      "description": "Show pending agent-tools-* timers.",
+      "required": false
+    },
+    {
+      "name": "cancel <name>",
+      "description": "Stop the timer+service for name.",
+      "required": false
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "JSON acks; list emits {raw: timers table}.",
+  "exit_codes": {
+    "0": "success",
+    "1": "systemd-run failed",
+    "2": "no user manager / bad args"
+  },
+  "notes": "Units are transient \u2014 gone after firing (once) or reboot. For survived-reboot persistence, future: systemd unit files.",
+  "selftest": "tests/schedule/smoke.sh"
+}

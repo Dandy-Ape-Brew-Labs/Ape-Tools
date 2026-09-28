@@ -1,0 +1,43 @@
+{
+  "name": "logs-query",
+  "version": "0.1.0",
+  "description": "Query log files or systemd journal with grep/time/level/context filters, JSON output. 'file' mode handles ISO timestamps and ERROR..TRACE levels; 'journal' wraps journalctl.",
+  "use_when": "triaging errors in logs or systemd units",
+  "category": "integrate",
+  "keywords": [
+    "logs",
+    "journal",
+    "journalctl",
+    "error",
+    "grep",
+    "tail",
+    "debug",
+    "triage",
+    "log file"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "logs_query.py",
+  "run": "python3 tools/logs-query/logs_query.py <file PATH|journal> [filters]",
+  "args": [
+    {
+      "name": "file <path>",
+      "description": "--grep REGEX --level LEVEL --since ISO --tail N -C ctx.",
+      "required": true
+    },
+    {
+      "name": "journal",
+      "description": "--unit U --priority err --since '1h ago' --grep PAT -n N --user.",
+      "required": false
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "JSON {source/file, matched, lines[]}.",
+  "exit_codes": {
+    "0": "success",
+    "1": "journal error",
+    "2": "bad file/args"
+  },
+  "selftest": "tests/logs-query/smoke.sh"
+}

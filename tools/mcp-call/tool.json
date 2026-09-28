@@ -1,0 +1,65 @@
+{
+  "name": "mcp-call",
+  "version": "0.1.0",
+  "description": "Client-side MCP bridge: list and call tools, list and read resources on other MCP servers over stdio. Servers come from an mcp.json config (Claude Code shape); each call is an ephemeral session.",
+  "use_when": "calling tools on other MCP servers — email, DB, or any MCP connector",
+  "category": "integrate",
+  "keywords": [
+    "mcp",
+    "client",
+    "call",
+    "server",
+    "tools",
+    "resources",
+    "stdio",
+    "connector",
+    "integration"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "mcp_call.py",
+  "run": "uv run tools/mcp-call/mcp_call.py <servers|tools|call|resources|read> [args]",
+  "args": [
+    {
+      "name": "servers",
+      "description": "List configured servers (command/args/env key names, never values).",
+      "required": false
+    },
+    {
+      "name": "tools <server>",
+      "description": "List the server's tools with names/descriptions/schemas.",
+      "required": false
+    },
+    {
+      "name": "call <server> <tool> [--args JSON]",
+      "description": "Call a tool; --args is a JSON object, default {}.",
+      "required": false
+    },
+    {
+      "name": "resources <server>",
+      "description": "List the server's resources.",
+      "required": false
+    },
+    {
+      "name": "read <server> <uri>",
+      "description": "Read a resource; returns its content blocks.",
+      "required": false
+    }
+  ],
+  "env": {
+    "MCP_CONFIG": "Path to mcp.json (default: $AGENT_TOOLS_HOME/mcp.json then ./mcp.json).",
+    "MCP_CALL_TIMEOUT": "Session timeout in seconds (default 30).",
+    "AGENT_TOOLS_HOME": "State root; default config location."
+  },
+  "dependencies": [
+    "mcp"
+  ],
+  "stdout": "JSON — server list, tool list, call result {isError, content[]}, or resource contents.",
+  "exit_codes": {
+    "0": "success",
+    "1": "server error or timeout",
+    "2": "missing/invalid config or bad arguments"
+  },
+  "notes": "Config shape: {\"mcpServers\": {\"name\": {\"command\": \"...\", \"args\": [...], \"env\": {...}}}}",
+  "selftest": "tests/mcp-call/smoke.sh"
+}

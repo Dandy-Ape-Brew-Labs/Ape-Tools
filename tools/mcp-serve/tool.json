@@ -1,0 +1,34 @@
+{
+  "name": "mcp-serve",
+  "version": "0.1.0",
+  "description": "Exposes the entire toolbox over MCP stdio \u2014 each tool.json becomes an MCP tool taking an 'args' string matching its CLI grammar. Plug into Claude Code/Cursor for instant tool access.",
+  "use_when": "giving an MCP-capable agent access to the toolbox",
+  "category": "meta",
+  "keywords": [
+    "mcp",
+    "server",
+    "stdio",
+    "protocol",
+    "expose",
+    "claude code",
+    "cursor",
+    "integration"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "mcp_serve.py",
+  "run": "uv run tools/mcp-serve/mcp_serve.py",
+  "args": [],
+  "env": {
+    "AGENT_TOOLS_MCP_TIMEOUT": "Per-call timeout seconds (default 120)."
+  },
+  "dependencies": [
+    "mcp"
+  ],
+  "stdout": "MCP protocol frames (stdio) \u2014 not human-readable.",
+  "exit_codes": {
+    "0": "clean shutdown"
+  },
+  "notes": "Client config: {\"command\": \"uv\", \"args\": [\"run\", \"<repo>/tools/mcp-serve/mcp_serve.py\"]}",
+  "selftest": "tests/mcp-serve/smoke.sh"
+}

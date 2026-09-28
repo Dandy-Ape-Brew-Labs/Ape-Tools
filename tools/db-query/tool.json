@@ -1,0 +1,58 @@
+{
+  "name": "db-query",
+  "version": "0.1.0",
+  "description": "Query databases: SQLite natively (stdlib, JSON rows out), Postgres/MySQL via psql/mysql CLIs. Tables/schema introspection built in.",
+  "use_when": "reading or inspecting a database",
+  "category": "integrate",
+  "keywords": [
+    "sql",
+    "sqlite",
+    "postgres",
+    "mysql",
+    "query",
+    "database",
+    "table",
+    "select",
+    "db"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "db_query.py",
+  "run": "python3 tools/db-query/db_query.py <--db FILE|--url DSN> <--sql SQL|--tables|--schema [T]>",
+  "args": [
+    {
+      "name": "--db",
+      "description": "SQLite file or :memory:.",
+      "required": true
+    },
+    {
+      "name": "--url",
+      "description": "postgresql:// or mysql:// DSN (needs psql/mysql CLI).",
+      "required": true
+    },
+    {
+      "name": "--sql",
+      "description": "Query text or '-' for stdin. --limit wraps with LIMIT.",
+      "required": false
+    },
+    {
+      "name": "--tables",
+      "description": "List tables/views (sqlite).",
+      "required": false
+    },
+    {
+      "name": "--schema [table]",
+      "description": "Print DDL (sqlite).",
+      "required": false
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "JSON array of row objects (sqlite) or raw CLI output (psql/mysql).",
+  "exit_codes": {
+    "0": "success",
+    "1": "query error",
+    "2": "missing db/cli/args"
+  },
+  "selftest": "tests/db-query/smoke.sh"
+}

@@ -1,0 +1,48 @@
+{
+  "name": "skill-load",
+  "version": "0.1.0",
+  "description": "Discover and load agent skills — directories containing SKILL.md with frontmatter (name, description). Scans repo and user skill roots, parses metadata without a YAML dependency, and returns the full skill content plus its path so sibling resources stay reachable.",
+  "use_when": "an agent needs to enumerate available skills or fetch a skill's instructions by name",
+  "category": "meta",
+  "keywords": [
+    "skill",
+    "skills",
+    "loader",
+    "capability",
+    "plugin",
+    "instructions",
+    "SKILL.md",
+    "extensions"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "skill_load.py",
+  "run": "python3 tools/skill-load/skill_load.py <list|get> [name] [--roots dir...]",
+  "args": [
+    {
+      "name": "list",
+      "description": "Emit all discovered skills: {name, dir, path, root, description, metadata}.",
+      "required": false
+    },
+    {
+      "name": "get <name>",
+      "description": "Emit one skill incl. full SKILL.md content; matches dir or frontmatter name.",
+      "required": false
+    },
+    {
+      "name": "--roots dir...",
+      "description": "Override the default root scan list.",
+      "required": false
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "JSON skill list or single skill with 'content'.",
+  "exit_codes": {
+    "0": "success",
+    "1": "skill not found",
+    "2": "usage error"
+  },
+  "notes": "Read-only. First root wins on name collisions; default roots cover ./.devin, ./.claude, ./.agents, ~/.agents, ~/.claude, ~/.config/devin.",
+  "selftest": "tests/skill-load/smoke.sh"
+}

@@ -1,0 +1,48 @@
+{
+  "name": "open",
+  "version": "0.1.0",
+  "description": "Open files or URLs in the user's desktop applications via xdg-open — show a produced file, pop a browser tab, reveal output in the file manager. 'mime' reports the registered default handler.",
+  "use_when": "showing the user a file or URL in their desktop apps",
+  "category": "interact",
+  "keywords": [
+    "open",
+    "xdg-open",
+    "launch",
+    "browser",
+    "viewer",
+    "file manager",
+    "desktop",
+    "reveal"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "open.py",
+  "run": "python3 tools/open/open.py <open|mime> [args]",
+  "args": [
+    {
+      "name": "open <path|url>",
+      "description": "Open in the default app (file type or browser).",
+      "required": false
+    },
+    {
+      "name": "open --reveal <path>",
+      "description": "Reveal the file in the file manager.",
+      "required": false
+    },
+    {
+      "name": "mime <path>",
+      "description": "Report the file's mime type and default handler.",
+      "required": false
+    }
+  ],
+  "env": {},
+  "dependencies": [],
+  "stdout": "JSON {opened, reveal} or {path, mime, default_handler}.",
+  "exit_codes": {
+    "0": "success",
+    "1": "xdg-open failed",
+    "2": "usage error / target not found",
+    "3": "headless session or xdg-utils missing"
+  },
+  "selftest": "tests/open/smoke.sh"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "selftest",
+  "version": "0.1.0",
+  "description": "Validates every tools/*/tool.json manifest (required fields, entrypoint exists, run path resolves, schema-v2 fields) and runs each tool's declared smoke test under tests/. Use after adding or changing a tool.",
+  "use_when": "verifying all tools work after adding or changing them",
+  "category": "meta",
+  "keywords": ["test", "validate", "smoke", "verify", "check", "manifest", "ci"],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "selftest.py",
+  "run": "python3 tools/selftest/selftest.py [--only name] [--manifests-only]",
+  "args": [
+    { "name": "--only", "description": "Run validation and smoke for a single tool directory name.", "required": false },
+    { "name": "--manifests-only", "description": "Validate manifests without running smoke tests.", "required": false },
+    { "name": "--timeout", "description": "Per-smoke timeout in seconds.", "required": false, "default": "120" }
+  ],
+  "dependencies": [],
+  "stdout": "JSON report: {ok, valid, invalid, smoke_pass, smoke_fail, no_smoke}.",
+  "exit_codes": { "0": "all manifests valid and all smokes passed", "1": "validation or smoke failure", "2": "usage error" }
+}

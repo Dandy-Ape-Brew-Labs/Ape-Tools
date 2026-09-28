@@ -1,0 +1,35 @@
+{
+  "name": "file-info",
+  "version": "0.1.0",
+  "description": "Report file or directory metadata: size, mtime, permissions, type, mime guess, line count, or directory entry count. Check before reading unknown files.",
+  "use_when": "checking a file's size/type before reading it",
+  "category": "files",
+  "keywords": [
+    "stat",
+    "info",
+    "size",
+    "mtime",
+    "metadata",
+    "type",
+    "mime",
+    "exists"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "file_info.py",
+  "run": "python3 tools/file-info/file_info.py <path> [more paths...]",
+  "args": [
+    {
+      "name": "paths",
+      "description": "One or more files/directories to inspect.",
+      "required": true
+    }
+  ],
+  "dependencies": [],
+  "stdout": "JSON object (single path) or array of objects with size, mtime, mode, mime, lines/entries.",
+  "exit_codes": {
+    "0": "all paths inspected",
+    "1": "one or more paths not found"
+  },
+  "selftest": "tests/file-info/smoke.sh"
+}

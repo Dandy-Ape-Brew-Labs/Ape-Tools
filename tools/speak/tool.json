@@ -1,0 +1,46 @@
+{
+  "name": "speak",
+  "version": "0.1.0",
+  "description": "Text-to-speech alerts for local agents — say 'done' out loud. Engine auto-selects: espeak-ng, espeak, flite, festival, or pico2wave+aplay. 'backends' reports what's installed.",
+  "use_when": "alerting the user audibly with text-to-speech",
+  "category": "interact",
+  "keywords": [
+    "speak",
+    "tts",
+    "voice",
+    "audio",
+    "espeak",
+    "say",
+    "alert",
+    "announce"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "speak.py",
+  "run": "python3 tools/speak/speak.py <say|backends> [args]",
+  "args": [
+    {
+      "name": "say [text|--file path] [--rate wpm] [--voice v]",
+      "description": "Speak text, a file, or stdin aloud.",
+      "required": false
+    },
+    {
+      "name": "backends",
+      "description": "Report which TTS engines exist and which would be used.",
+      "required": false
+    }
+  ],
+  "env": {
+    "SPEAK_ENGINE": "Force engine: espeak-ng, espeak, flite, festival, pico2wave."
+  },
+  "dependencies": [],
+  "stdout": "JSON {spoken, engine, chars} or backend status.",
+  "exit_codes": {
+    "0": "success",
+    "1": "engine failed",
+    "2": "nothing to say",
+    "3": "no TTS engine installed"
+  },
+  "notes": "Setup: sudo dnf install espeak-ng (or espeak / flite / festival).",
+  "selftest": "tests/speak/smoke.sh"
+}

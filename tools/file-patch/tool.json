@@ -1,0 +1,47 @@
+{
+  "name": "file-patch",
+  "version": "0.1.0",
+  "description": "Apply a Codex apply_patch envelope (*** Begin Patch / Add|Update|Delete File / Move to / @@ anchors) across multiple files in one call. Paths are relative to --cwd; absolute paths and escapes are refused.",
+  "use_when": "applying a multi-file patch in apply_patch format",
+  "category": "files",
+  "keywords": [
+    "patch",
+    "apply_patch",
+    "multi-file",
+    "diff",
+    "codex",
+    "hunks",
+    "rename",
+    "delete"
+  ],
+  "language": "python",
+  "runtime": "python>=3.11",
+  "entrypoint": "file_patch.py",
+  "run": "python3 tools/file-patch/file_patch.py [--file PATCH] [--cwd DIR] [--dry-run] < patch",
+  "args": [
+    {
+      "name": "--file",
+      "description": "Patch file path; omit to read patch from stdin.",
+      "required": false
+    },
+    {
+      "name": "--cwd",
+      "description": "Root that relative paths resolve against.",
+      "required": false,
+      "default": "."
+    },
+    {
+      "name": "--dry-run",
+      "description": "Validate and report changes without writing.",
+      "required": false
+    }
+  ],
+  "dependencies": [],
+  "stdout": "JSON {dry_run, changes: [{op, path, to?}]}.",
+  "exit_codes": {
+    "0": "applied or validated",
+    "1": "hunk/anchor mismatch or safety refusal",
+    "2": "malformed patch or usage error"
+  },
+  "selftest": "tests/file-patch/smoke.sh"
+}
