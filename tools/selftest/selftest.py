@@ -7,7 +7,11 @@ Two stages:
      run it in a temp dir with AGENT_TOOLS_HOME isolated.
 
 Usage:
-  selftest.py [--only name] [--manifests-only]
+  selftest.py [--only name] [--manifests-only] [--ci]
+              [--exclude a,b,c] [--json-out results.json]
+
+CI mode skips manifests declaring "selftest_ci": false (e.g. tests that need
+a live model, credentials, or a desktop session and cannot self-skip).
 """
 
 import json
@@ -15,6 +19,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "lib"))
@@ -73,6 +78,7 @@ def validate_manifest(path: Path) -> list[str]:
 
 def run_smoke(manifest_path: Path, smoke: Path, timeout: int) -> dict:
     env = dict(os.environ)
+    start = time.monotonic()
     with tempfile.TemporaryDirectory(prefix="agent-tools-test-") as tmp:
         env["AGENT_TOOLS_HOME"] = str(Path(tmp) / "state")
         env["TEST_TMPDIR"] = tmp
@@ -89,12 +95,14 @@ def run_smoke(manifest_path: Path, smoke: Path, timeout: int) -> dict:
             return {
                 "tool": manifest_path.parent.name,
                 "exit": proc.returncode,
+                "duration_s": round(time.monotonic() - start, 2),
                 "stderr": proc.stderr[-2000:] if proc.returncode else "",
             }
         except subprocess.TimeoutExpired:
             return {
                 "tool": manifest_path.parent.name,
                 "exit": 124,
+                "duration_s": round(time.monotonic() - start, 2),
                 "stderr": f"smoke timed out after {timeout}s",
             }
 
@@ -106,19 +114,31 @@ def main() -> int:
                         help="validate manifests without running smokes")
     parser.add_argument("--timeout", type=int, default=120,
                         help="per-smoke timeout seconds (default 120)")
+    parser.add_argument("--ci", action="store_true",
+                        help="skip manifests declaring 'selftest_ci': false")
+    parser.add_argument("--exclude", default="",
+                        help="comma-separated tool names to skip entirely")
+    parser.add_argument("--json-out", metavar="PATH",
+                        help="also write the results JSON to PATH")
     args = parser.parse_args()
 
-    results = {"valid": [], "invalid": [], "smoke_pass": [], "smoke_fail": [], "no_smoke": []}
+    results = {"valid": [], "invalid": [], "smoke_pass": [], "smoke_fail": [],
+               "no_smoke": [], "skipped": []}
     paths = sorted(TOOLS_DIR.glob("*/tool.json"))
     if args.only:
         paths = [p for p in paths if p.parent.name == args.only]
         if not paths:
             agentlib.die(f"no tool dir named '{args.only}'", 2)
 
+    excluded = {n.strip() for n in args.exclude.split(",") if n.strip()}
+
     for path in paths:
         m = agentlib.read_json(path) or {}
         errors = validate_manifest(path)
         name = path.parent.name
+        if name in excluded:
+            results["skipped"].append({"tool": name, "reason": "excluded via --exclude"})
+            continue
         if errors:
             results["invalid"].append({"tool": name, "errors": errors})
             continue
@@ -129,11 +149,17 @@ def main() -> int:
         if not selftest:
             results["no_smoke"].append(name)
             continue
+        if args.ci and m.get("selftest_ci") is False:
+            results["skipped"].append({"tool": name, "reason": "selftest_ci: false"})
+            continue
         res = run_smoke(path, REPO_ROOT / selftest, args.timeout)
         (results["smoke_pass"] if res["exit"] == 0 else results["smoke_fail"]).append(res)
 
     ok = not results["invalid"] and not results["smoke_fail"]
-    agentlib.emit({"ok": ok, **results})
+    payload = {"ok": ok, **results}
+    if args.json_out:
+        agentlib.write_json(Path(args.json_out), payload)
+    agentlib.emit(payload)
     return 0 if ok else 1
 
 

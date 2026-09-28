@@ -12,9 +12,12 @@
   "args": [
     { "name": "--only", "description": "Run validation and smoke for a single tool directory name.", "required": false },
     { "name": "--manifests-only", "description": "Validate manifests without running smoke tests.", "required": false },
-    { "name": "--timeout", "description": "Per-smoke timeout in seconds.", "required": false, "default": "120" }
+    { "name": "--timeout", "description": "Per-smoke timeout in seconds.", "required": false, "default": "120" },
+    { "name": "--ci", "description": "Skip manifests declaring 'selftest_ci': false.", "required": false },
+    { "name": "--exclude", "description": "Comma-separated tool names to skip entirely.", "required": false },
+    { "name": "--json-out", "description": "Also write the results JSON to the given path.", "required": false }
   ],
   "dependencies": [],
-  "stdout": "JSON report: {ok, valid, invalid, smoke_pass, smoke_fail, no_smoke}.",
+  "stdout": "JSON report: {ok, valid, invalid, smoke_pass, smoke_fail, no_smoke, skipped}.",
   "exit_codes": { "0": "all manifests valid and all smokes passed", "1": "validation or smoke failure", "2": "usage error" }
 }
