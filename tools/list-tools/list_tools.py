@@ -16,7 +16,7 @@ REQUIRED_FIELDS = ("name", "description", "language", "run")
 RECOMMENDED_FIELDS = ("use_when", "category")
 CATEGORIES = {
     "files", "search", "exec", "web", "gui", "state", "code", "git",
-    "interact", "orchestrate", "integrate", "util", "meta",
+    "interact", "orchestrate", "integrate", "util", "meta", "security",
 }
 
 
