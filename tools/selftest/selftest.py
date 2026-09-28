@@ -91,6 +91,7 @@ def run_smoke(manifest_path: Path, smoke: Path, timeout: int) -> dict:
                 capture_output=True,
                 text=True,
                 timeout=timeout,
+                check=False,
             )
             return {
                 "tool": manifest_path.parent.name,
