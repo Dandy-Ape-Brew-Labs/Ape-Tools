@@ -36,3 +36,6 @@ vendor/
 
 # E2E run artifacts (traces, screenshots, reports)
 tests/web-browser/reports/
+
+# Playwright MCP scratch output
+.playwright-mcp/

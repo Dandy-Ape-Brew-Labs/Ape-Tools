@@ -1,5 +1,7 @@
 # Agent Tools
 
+[![CI](https://github.com/Dandy-Ape-Brew-Labs/Ape-Tools/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Dandy-Ape-Brew-Labs/Ape-Tools/actions/workflows/ci.yml)
+
 A collection of standalone scripts and tools designed to be invoked by AI
 agents (and humans). Tools may be written in any language — Python, Node.js,
 Go, Bash — as long as they follow the conventions below.

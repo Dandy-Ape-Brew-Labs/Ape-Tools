@@ -87,6 +87,9 @@ python3 tools/selftest/selftest.py
 3. Add `tests/<name>/smoke.sh` exercising the tool end-to-end; declare it
    as `"selftest": "tests/<name>/smoke.sh"`. Keep it deterministic —
    temp dirs, local fixtures, graceful skips for missing optional deps.
+   CI runs the whole suite (`selftest.py --ci`); if a smoke genuinely
+   requires a live model, credentials, or a desktop session, set
+   `"selftest_ci": false` in the manifest and it is reported as skipped.
 4. Shared deps: `uv add <pkg>` for Python, `npm install <pkg> --save-exact` for
    Node. Per-tool manifests only when isolation is genuinely needed.
 5. Verify: `python3 tools/selftest/selftest.py --only <name>` passes and

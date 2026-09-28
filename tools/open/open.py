@@ -36,15 +36,12 @@ def main() -> int:
     m = sub.add_parser("mime"); m.add_argument("path")
     args = p.parse_args()
 
-    if not agentlib.which("xdg-open"):
-        agentlib.die("xdg-open not found — install xdg-utils", 3)
-
     if args.cmd == "mime":
-        if not agentlib.which("xdg-mime"):
-            agentlib.die("xdg-mime not found — install xdg-utils", 3)
         path = Path(args.path)
         if not path.exists():
             agentlib.die(f"not found: {path}", 2)
+        if not agentlib.which("xdg-mime"):
+            agentlib.die("xdg-mime not found — install xdg-utils", 3)
         ftype = xdg(["xdg-mime", "query", "filetype", str(path)])
         default = ""
         if ftype.returncode == 0 and ftype.stdout.strip():
@@ -56,9 +53,6 @@ def main() -> int:
         return 0
 
     if args.cmd == "open":
-        if not session_ok():
-            agentlib.die("headless session (no DISPLAY/WAYLAND_DISPLAY) — "
-                         "nothing to open on", 3)
         if args.reveal:
             path = Path(args.reveal).resolve()
             if not path.exists():
@@ -71,6 +65,11 @@ def main() -> int:
             if not (target.startswith(("http://", "https://", "file://"))
                     or Path(target).exists()):
                 agentlib.die(f"not found: {target}", 2)
+        if not session_ok():
+            agentlib.die("headless session (no DISPLAY/WAYLAND_DISPLAY) — "
+                         "nothing to open on", 3)
+        if not agentlib.which("xdg-open"):
+            agentlib.die("xdg-open not found — install xdg-utils", 3)
         r = xdg(["xdg-open", target])
         if r.returncode != 0:
             agentlib.die(f"xdg-open failed: {r.stderr.strip()}", 1)
