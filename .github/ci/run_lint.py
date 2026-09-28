@@ -83,7 +83,9 @@ def lint_shellcheck() -> dict:
     if rc is None:
         return skipped("shellcheck (bash)", f"shellcheck failed to launch: {err}")
     try:
-        comments = (json.loads(out or "{}")).get("comments", [])
+        parsed = json.loads(out or "[]")
+        # shellcheck >=0.9 emits {"comments": [...]}, older emits a bare list
+        comments = parsed.get("comments", []) if isinstance(parsed, dict) else parsed
     except json.JSONDecodeError:
         return {"name": "shellcheck (bash)", "status": "error", "total": 0,
                 "findings": [], "error": (err or out)[-2000:]}

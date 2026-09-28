@@ -135,11 +135,12 @@ SECTIONS = {"cpu": cpu, "mem": mem, "disk": disk, "gpu": gpu,
 
 def main() -> int:
     p = agentlib.arg_parser(__doc__)
-    p.add_argument("sections", nargs="*", default=["all"],
+    p.add_argument("sections", nargs="*", default=None,
                    choices=[*SECTIONS, "all"],
                    help=f"sections: {', '.join(SECTIONS)} or all (default)")
     args = p.parse_args()
-    names = list(SECTIONS) if "all" in args.sections else args.sections
+    names = (list(SECTIONS) if not args.sections or "all" in args.sections
+             else args.sections)
     out = {}
     for name in names:
         try:
